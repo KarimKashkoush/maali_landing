@@ -1,91 +1,29 @@
 "use client";
 
 import Image, { getImageProps } from "next/image";
-import { HeartHandshake, Lightbulb, Sparkles } from "lucide-react";
 import schoolMark from "@/public/mini_logo_display.png";
 import { useUi } from "./_components/providers/UiProvider";
 import BrandStory from "./_components/ui/BrandStory";
 import HeroParticles from "./_components/ui/HeroParticles";
 import SchoolsDialog from "./_components/ui/SchoolsDialog";
 import SchoolVideo from "./_components/ui/SchoolVideo";
+import SchoolNumbers from "./_components/ui/SchoolNumbers";
+import FeaturedStudents from "./_components/ui/FeaturedStudents";
+import SchoolAchievements from "./_components/ui/SchoolAchievements";
+import ParentFeedback from "./_components/ui/ParentFeedback";
+import ContactSection from "./_components/ui/ContactSection";
+import SocialLinks from "./_components/ui/SocialLinks";
+import Footer from "./_components/layout/Footer";
 
-const featureIcons = [Lightbulb, Sparkles, HeartHandshake];
 const heroImageSizes = "(min-width: 1024px) and (max-height: 760px) min(27vw, 304px), (min-width: 1024px) min(31vw, 400px), min(34vw, 192px)";
 const { props: heroImage } = getImageProps({ src: schoolMark, alt: "", sizes: heroImageSizes });
 
-function InstagramLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-
-function FacebookLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14.2 8.2h3V4.3c-.52-.07-2.3-.23-4.4-.23-4.34 0-7.31 2.65-7.31 7.52v4.2H.58v4.36h4.91V31h6.02V20.15h4.71l.75-4.36h-5.46v-3.77c0-1.26.34-2.12 2.69-2.12Z" transform="scale(.72) translate(3 -1)" />
-    </svg>
-  );
-}
-
-function YoutubeLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M22.5 7.2a3 3 0 0 0-2.1-2.12C18.55 4.58 12 4.58 12 4.58s-6.55 0-8.4.5A3 3 0 0 0 1.5 7.2 31 31 0 0 0 1 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.12c1.85.5 8.4.5 8.4.5s6.55 0 8.4-.5a3 3 0 0 0 2.1-2.12A31 31 0 0 0 23 12a31 31 0 0 0-.5-4.8ZM9.75 15.3V8.7L15.5 12l-5.75 3.3Z" />
-    </svg>
-  );
-}
-
-function WhatsappLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 20.5 11.7Z" />
-      <path d="M8.2 7.7c.3-.4.7-.4 1-.1l1.1 1.5c.2.3.2.6 0 .9l-.6.8c.8 1.7 2 2.9 3.7 3.7l.8-.6c.3-.2.6-.2.9 0l1.5 1.1c.3.3.3.7-.1 1-1 .8-2.2 1-3.4.5a10.2 10.2 0 0 1-5.4-5.4c-.5-1.2-.3-2.4.5-3.4Z" />
-    </svg>
-  );
-}
-
-function SnapchatLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 3.2c-3 0-5 2.1-5 5v2.1c0 .8-.4 1.3-1.2 1.6l-1.4.6c-.5.2-.5.9 0 1.1l1.9.8c.4.2.7.5.8.9.3 1.3 1.1 2 2.4 2.2.7.1 1.1.4 1.3 1 .2.4.6.6 1 .5.7-.2 1.3-.2 2 0 .4.1.8-.1 1-.5.2-.6.6-.9 1.3-1 1.3-.2 2.1-.9 2.4-2.2.1-.4.4-.7.8-.9l1.9-.8c.5-.2.5-.9 0-1.1l-1.4-.6c-.8-.3-1.2-.8-1.2-1.6V8.2c0-2.9-2-5-5-5Z" />
-    </svg>
-  );
-}
-
-function TiktokLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14.6 3h3.1a5.2 5.2 0 0 0 3.2 3.2v3.1a8.3 8.3 0 0 1-3.2-1.1v6.2a6.1 6.1 0 1 1-6.1-6.1h.9v3.2a3 3 0 1 0 2.1 2.9V3Z" />
-    </svg>
-  );
-}
-
-function XLogo() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M18.24 2h3.31l-7.23 8.26L22.82 22h-6.66l-5.21-6.82L4.98 22H1.67l7.73-8.84L1.25 2H8.1l4.71 6.23L18.24 2Zm-1.16 17.93h1.83L7.1 3.96H5.13l11.95 15.97Z" />
-    </svg>
-  );
-}
-
-const socialChannels = [
-  { label: "Facebook", Icon: FacebookLogo },
-  { label: "Instagram", Icon: InstagramLogo },
-  { label: "YouTube", Icon: YoutubeLogo },
-  { label: "WhatsApp", Icon: WhatsappLogo },
-  { label: "Snapchat", Icon: SnapchatLogo },
-  { label: "TikTok", Icon: TiktokLogo },
-  { label: "X (Twitter)", Icon: XLogo },
-];
 
 export default function Home() {
   const { language, t } = useUi();
 
   return (
+    <>
     <main className="overflow-hidden pt-20" dir={language === "ar" ? "rtl" : "ltr"}>
       {/* Preload only where CSS displays the logo, using the exact image candidates. */}
       <link
@@ -117,19 +55,7 @@ export default function Home() {
               <SchoolsDialog />
             </div>
 
-            <div className="mt-5 flex items-center justify-center gap-1.5 min-[481px]:gap-2.5 lg:justify-start" role="group" aria-label={t.hero.followUs}>
-              {socialChannels.map(({ label, Icon }) => (
-                <button
-                  key={label}
-                  type="button"
-                  aria-label={label}
-                  title={label}
-                  className="grid size-[2.45rem] cursor-pointer appearance-none place-items-center rounded-full border border-border bg-card/90 p-0 text-brand shadow-[0_.4rem_1.2rem_rgb(0_0_0_/_0.05)] backdrop-blur-lg transition-[color,background-color,border-color,transform] duration-180 hover:-translate-y-[.18rem] hover:border-brand hover:bg-brand hover:text-white focus-visible:-translate-y-[.18rem] focus-visible:border-brand focus-visible:bg-brand focus-visible:text-white focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brand/30 min-[481px]:size-[2.8rem] [&_svg]:size-[1.05rem] min-[481px]:[&_svg]:size-[1.15rem]"
-                >
-                  <Icon />
-                </button>
-              ))}
-            </div>
+            <div className="mt-5"><SocialLinks /></div>
           </div>
 
           <div className="relative order-first grid min-w-0 place-items-center [@media(max-height:739px)]:max-lg:hidden lg:order-none [@media(max-height:500px)]:hidden">
@@ -183,51 +109,13 @@ export default function Home() {
 
       <BrandStory />
 
-      <section id="about" className="scroll-mt-24 bg-muted/40 py-24 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-black tracking-wide text-brand">{t.about.eyebrow}</p>
-            <h2 className="mt-4 text-3xl font-black trackinظg-tight sm:text-5xl">{t.about.title}</h2>
-            <p className="mt-5 text-lg leading-8 text-muted-foreground">{t.about.description}</p>
-          </div>
-          <div className="mt-14 grid gap-5 md:grid-cols-3">
-            {t.about.cards.map((card, index) => {
-              const Icon = featureIcons[index];
-              return (
-                <article
-                  key={card.title}
-                  className="rounded-[2rem] border border-border/70 bg-card p-7 shadow-sm transition-transform hover:-translate-y-1"
-                >
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
-                    <Icon className="size-6" />
-                  </div>
-                  <h3 className="mt-6 text-xl font-black">{card.title}</h3>
-                  <p className="mt-3 leading-7 text-muted-foreground">{card.description}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section id="stages" className="h-px scroll-mt-24" aria-hidden="true" />
-      <section id="programs" className="h-px scroll-mt-24" aria-hidden="true" />
-      <section id="activities" className="h-px scroll-mt-24" aria-hidden="true" />
-
-      <section id="contact" className="scroll-mt-24 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-7 rounded-[2.5rem] bg-brand-solid px-7 py-12 text-center text-white shadow-xl shadow-brand/15 sm:px-12 lg:flex-row lg:text-start">
-          <div>
-            <h2 className="text-3xl font-black sm:text-4xl">{t.cta.title}</h2>
-            <p className="mt-3 text-white/90">{t.cta.description}</p>
-          </div>
-          <a
-            href="mailto:info@maali-schools.com"
-            className="shrink-0 rounded-2xl bg-white px-7 py-4 text-sm font-black text-brand-solid transition-transform hover:-translate-y-0.5"
-          >
-            {t.actions.contact}
-          </a>
-        </div>
-      </section>
+      <SchoolNumbers />
+      <FeaturedStudents />
+      <SchoolAchievements />
+      <ParentFeedback />
+      <ContactSection />
     </main>
+    <Footer />
+    </>
   );
 }

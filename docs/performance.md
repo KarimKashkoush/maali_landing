@@ -16,7 +16,7 @@ The project is still in development. Do not invent a production domain or submit
 
 1. Set correct metadataBase, page-specific canonical URLs, robots.txt, and a sitemap listing the real routes.
 2. Verify the school name, location, contact details, and actual page content before adding structured data. English currently shares the Arabic URL; dedicated locale routes are needed for independent language indexing.
-3. Make school links discoverable outside a dialog, and complete the placeholder stages, programs, and activities sections.
+3. Make school links discoverable outside a dialog. Replace the clearly marked preview student names/rankings and parent reviews in `lib/home-content.ts` with approved content. Confirm the achievement breakdown in `lib/achievements.ts`.
 4. Test Core Web Vitals on production hosting and real mobile connections. A successful local build is not a PageSpeed score or proof of search ranking.
 5. Verify media byte-range responses, caching, and HTTPS on the deployment host, then configure Search Console.
 
@@ -45,3 +45,14 @@ ScrollSmoother and the brand timeline load on scroll intent (wheel, touch, scrol
 Brand-story artwork is also mounted only when the section is within 200px of the viewport; the square grid reserves its layout before images load. Native `loading="lazy"` alone fetched these images within the browser's much larger near-viewport threshold during the initial audit. Text remains server-rendered and the hero logo stays eager/high-priority.
 
 Run `node --experimental-strip-types --test tests/scroll-intent.test.mjs` to check initialization, cleanup, keyboard input, restored scrolling, and in-page navigation.
+
+## Homepage additions
+
+- The numbers section uses IntersectionObserver and a shared requestAnimationFrame loop only while visible counters are counting. Final numbers remain in server-rendered HTML and screen-reader text; reduced-motion users get the final values directly.
+- Student tabs show three fictional names per stage, with keyboard navigation and no photos or image requests. The preview disclosure must stay until the school supplies approved names and rankings.
+- Achievements and medal totals derive from one data file. Each medal is an inline SVG, so nine medals produce nine graphics without nine network requests. Rankings, awards, and student counts are not added to the medal total.
+- Parent reviews reuse the existing GSAP bundle, loaded on scroll intent. The pinned track moves physically right-to-left in both languages and releases at its end. Compact screens use native horizontal browsing to avoid pinning cards taller than the available viewport; reduced-motion users get a static grid. A skip link leads directly to contact.
+- Contact preview has no backend or external request. Set `contactWhatsApp` to the school's confirmed international number to enable the explicit WhatsApp link after preview. Set official profiles in `socialUrls`; empty values do not navigate to guessed accounts.
+- All new section styling uses Tailwind. No new font, animation library, student photos, or external service was added. Re-run production Lighthouse to measure the net effect; no new score is implied by the build checks.
+
+Run `node --experimental-strip-types --test tests/*.test.mjs` for content, medal arithmetic, contact-link validation, and scroll-intent tests.

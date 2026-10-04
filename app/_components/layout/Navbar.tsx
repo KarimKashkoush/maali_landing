@@ -34,9 +34,8 @@ export default function Navbar() {
       const links = [
             { name: t.nav.home, href: "#home" },
             { name: t.nav.about, href: "#about" },
-            { name: t.nav.stages, href: "#stages" },
-            { name: t.nav.programs, href: "#programs" },
-            { name: t.nav.activities, href: "#activities" },
+            { name: language === "ar" ? "طلابنا المتميزون" : "Our students", href: "#students" },
+            { name: language === "ar" ? "آراء أولياء الأمور" : "Parent feedback", href: "#testimonials" },
             { name: t.nav.contact, href: "#contact" },
       ];
 
