@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useUi } from "../providers/UiProvider";
+import { onScrollIntent } from "@/lib/scroll-intent";
 
 const letters = ["M", "C", "S"] as const;
 // Layout translation stays on the wrapper; GSAP owns only the inner panel's transform.
@@ -11,7 +12,22 @@ const staticPanel = "motion-reduce:visible motion-reduce:border-b motion-reduce:
 
 export default function BrandStory() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [imagesVisible, setImagesVisible] = useState(false);
   const { language, t } = useUi();
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    // Native image lazy loading can still fetch this entire section during
+    // initial load. Keep its fixed-size grid and prepare artwork just before arrival.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || entry.intersectionRatio <= 0) return;
+      setImagesVisible(true);
+      observer.disconnect();
+    }, { rootMargin: "200px 0px", threshold: [0, 0.01] });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -26,12 +42,14 @@ export default function BrandStory() {
 
       let cancelled = false;
       let cleanup = () => {};
+      let cancelIntent = () => {};
       dispose = () => {
         cancelled = true;
+        cancelIntent();
         cleanup();
       };
 
-      void Promise.all([import("gsap"), import("gsap/ScrollTrigger")])
+      cancelIntent = onScrollIntent(() => { void Promise.all([import("gsap"), import("gsap/ScrollTrigger")])
         .then(([{ gsap }, { ScrollTrigger }]) => {
           if (cancelled) return;
 
@@ -108,7 +126,7 @@ export default function BrandStory() {
         })
         .catch((error: unknown) => {
           if (!cancelled) console.error("Brand story animation unavailable; showing the static story.", error);
-        });
+        }); });
     };
 
     setup();
@@ -133,15 +151,14 @@ export default function BrandStory() {
             <div className="relative grid aspect-square w-[min(42vw,11.5rem)] grid-cols-2 grid-rows-2 gap-0 [direction:ltr] drop-shadow-[0_1.5rem_2rem_rgb(0_0_0_/_0.17)] motion-reduce:w-[min(48vw,12rem)] md:w-[min(26vw,21rem)] md:motion-reduce:w-[min(26vw,17rem)] [@media(min-width:768px)_and_(max-height:650px)]:w-[min(23vw,15rem)]">
               {(["m", "c", "s", "base"] as const).map((piece) => (
                 <div key={piece} className="block will-change-[transform,opacity]" data-logo-piece>
-                  <Image
+                  {imagesVisible && <Image
                     className="block size-full object-contain"
                     src={`/brand-mark/${piece}.png`}
                     alt=""
                     width={512}
                     height={512}
-                    sizes="(max-width: 767px) 22vw, 13vw"
-                    unoptimized
-                  />
+                    sizes="(max-width: 767px) min(21vw, 92px), min(13vw, 168px)"
+                  />}
                 </div>
               ))}
             </div>

@@ -1,172 +1,85 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { schoolVideo } from "@/lib/school-video";
 import { useUi } from "../providers/UiProvider";
 
-type YouTubePlayer = {
-  mute: () => void;
-  playVideo: () => void;
-  destroy: () => void;
+type NetworkConnection = EventTarget & {
+  saveData?: boolean;
 };
-
-type YouTubeApi = {
-  Player: new (
-    element: HTMLElement,
-    options: {
-      videoId: string;
-      playerVars: Record<string, string | number>;
-      events: { onReady: (event: { target: YouTubePlayer }) => void };
-    },
-  ) => YouTubePlayer;
-};
-
-type YouTubeWindow = Window & {
-  YT?: YouTubeApi;
-  onYouTubeIframeAPIReady?: () => void;
-};
-
-let youtubeApiPromise: Promise<YouTubeApi> | undefined;
-
-function loadYouTubeApi() {
-  const youtubeWindow = window as YouTubeWindow;
-  if (youtubeWindow.YT?.Player) return Promise.resolve(youtubeWindow.YT);
-  if (!youtubeApiPromise) {
-    youtubeApiPromise = new Promise<YouTubeApi>((resolve, reject) => {
-      const previousReady = youtubeWindow.onYouTubeIframeAPIReady;
-      youtubeWindow.onYouTubeIframeAPIReady = () => {
-        previousReady?.();
-        if (youtubeWindow.YT) resolve(youtubeWindow.YT);
-      };
-      const script = document.createElement("script");
-      script.src = "https://www.youtube.com/iframe_api";
-      script.async = true;
-      script.onerror = () => {
-        youtubeApiPromise = undefined;
-        reject(new Error("YouTube player could not load."));
-      };
-      document.head.appendChild(script);
-    });
-  }
-  return youtubeApiPromise;
-}
-
-function getYouTubeId(source: string) {
-  try {
-    const url = new URL(source);
-    const host = url.hostname.replace(/^www\./, "");
-    const id = host === "youtu.be"
-      ? url.pathname.split("/")[1]
-      : ["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(host)
-        ? url.searchParams.get("v") || url.pathname.match(/^\/(?:embed|shorts)\/([^/]+)/)?.[1]
-        : null;
-    return id && /^[\w-]{11}$/.test(id) ? id : null;
-  } catch {
-    return null;
-  }
-}
 
 export default function SchoolVideo() {
   const { language } = useUi();
   const sectionRef = useRef<HTMLElement>(null);
-  const playerRef = useRef<HTMLDivElement>(null);
-  const [loadVideo, setLoadVideo] = useState(false);
-  const videoId = getYouTubeId(schoolVideo.source);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section || !schoolVideo.source) return;
+    const video = videoRef.current;
+    if (!section || !video) return;
     const motion = window.matchMedia("(prefers-reduced-motion: no-preference)");
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && motion.matches) {
-        setLoadVideo(true);
-        observer.disconnect();
+    const connection = (navigator as Navigator & { connection?: NetworkConnection }).connection;
+    let visible = false;
+
+    const updatePlayback = () => {
+      // The poster is below the fold too: assigning it in the initial HTML
+      // would compete with the hero even when video preload is "none".
+      if (visible && !video.hasAttribute("poster")) video.poster = schoolVideo.poster;
+      if (!visible || document.hidden || !motion.matches || connection?.saveData) {
+        video.pause();
+        return;
       }
-    }, { rootMargin: "200px" });
-    observer.observe(section);
-    const onMotionChange = () => {
-      if (!motion.matches) setLoadVideo(false);
-      else observer.observe(section);
+
+      // Assign one source only, when visible. Autoplay alone would bypass preload="none".
+      if (!video.hasAttribute("src")) {
+        video.src = schoolVideo.source;
+      }
+      video.muted = true;
+      // Some browsers still restrict autoplay. The poster remains as the fallback.
+      void video.play().catch(() => {});
     };
-    motion.addEventListener("change", onMotionChange);
+
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting && entry.intersectionRatio >= 0.01;
+      updatePlayback();
+    }, { threshold: [0, 0.01] });
+
+    observer.observe(section);
+    document.addEventListener("visibilitychange", updatePlayback);
+    motion.addEventListener("change", updatePlayback);
+    connection?.addEventListener("change", updatePlayback);
     return () => {
       observer.disconnect();
-      motion.removeEventListener("change", onMotionChange);
+      document.removeEventListener("visibilitychange", updatePlayback);
+      motion.removeEventListener("change", updatePlayback);
+      connection?.removeEventListener("change", updatePlayback);
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
     };
   }, []);
-
-  useEffect(() => {
-    const host = playerRef.current;
-    if (!loadVideo || !videoId || !host) return;
-    let cancelled = false;
-    let player: YouTubePlayer | undefined;
-    // The API replaces its mount node; keep React's host node intact.
-    const mount = document.createElement("div");
-    mount.className = "size-full";
-    host.appendChild(mount);
-    void loadYouTubeApi().then((api) => {
-      if (cancelled) return;
-      player = new api.Player(mount, {
-        videoId,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          loop: 1,
-          playlist: videoId,
-          playsinline: 1,
-          disablekb: 1,
-          fs: 0,
-          rel: 0,
-          origin: window.location.origin,
-        },
-        events: {
-          onReady: ({ target }) => {
-            if (cancelled) return;
-            target.mute();
-            target.playVideo();
-          },
-        },
-      });
-    }).catch((error: unknown) => {
-      if (!cancelled) console.warn("School video unavailable; keeping the static background.", error);
-    });
-    return () => {
-      cancelled = true;
-      player?.destroy();
-      host.replaceChildren();
-    };
-  }, [loadVideo, videoId]);
 
   return (
     <section
       id="school-film"
       ref={sectionRef}
       aria-labelledby="school-film-caption"
-      className="relative isolate grid h-[clamp(22rem,58svh,42rem)] w-full scroll-mt-20 place-items-center overflow-hidden bg-brand-solid text-white [container-type:size]"
+      className="relative isolate grid h-[clamp(22rem,58svh,42rem)] w-full scroll-mt-20 place-items-center overflow-hidden bg-brand-solid text-white"
     >
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_25%_30%,var(--gold-soft),transparent_65%),linear-gradient(135deg,#1c5954,#102f2d)]" aria-hidden="true" />
-      {loadVideo && schoolVideo.source && (
-        videoId ? (
-          <div
-            ref={playerRef}
-            aria-hidden="true"
-            inert
-            className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[max(100cqh,56.25cqw)] w-[max(100cqw,177.78cqh)] -translate-x-1/2 -translate-y-1/2 [&_iframe]:size-full"
-          />
-        ) : (
-          <video
-            src={schoolVideo.source}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden="true"
-            tabIndex={-1}
-            className="pointer-events-none absolute inset-0 -z-10 size-full object-cover"
-          />
-        )
-      )}
+      <video
+        ref={videoRef}
+        width={640}
+        height={360}
+        muted
+        loop
+        playsInline
+        preload="none"
+        disablePictureInPicture
+        aria-hidden="true"
+        tabIndex={-1}
+        className="pointer-events-none absolute inset-0 -z-10 size-full object-cover"
+      />
       <div className="pointer-events-none absolute inset-0 bg-black/65 shadow-[inset_0_0_8rem_rgb(0_0_0_/_0.55)]" aria-hidden="true" />
       <h2 id="school-film-caption" className="relative mx-auto max-w-5xl px-6 text-center text-[clamp(2rem,4.5vw,4.5rem)] leading-[1.6] font-black text-balance drop-shadow-lg sm:px-10">
         {schoolVideo.caption[language]}

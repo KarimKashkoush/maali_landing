@@ -9,6 +9,7 @@ import SmoothScroll from "./_components/ui/SmoothScroll";
 const cairo = localFont({
   src: "./fonts/Cairo-Variable.ttf",
   variable: "--font-cairo",
+  preload: false,
   weight: "200 1000",
   style: "normal",
   display: "swap",
@@ -16,8 +17,8 @@ const cairo = localFont({
 
 const ping = localFont({
   src: [
-    { path: "./fonts/PingARLT-Bold.otf", weight: "700", style: "normal" },
-    { path: "./fonts/PingARLT-Black.otf", weight: "900", style: "normal" },
+    { path: "./fonts/PingARLT-Bold.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/PingARLT-Black.woff2", weight: "900", style: "normal" },
   ],
   variable: "--font-ping",
   display: "swap",
@@ -25,7 +26,14 @@ const ping = localFont({
 
 export const metadata: Metadata = {
   title: "مدارس المعالي الإبداعية الأهلية",
-  description: "مدارس المعالي الإبداعية هي مؤسسة تعليمية رائدة تهدف إلى تقديم تجربة تعليمية متكاملة تجمع بين التميز الأكاديمي، والإبداع، والتقنيات الحديثة، والقيم التربوية. نعمل على توفير بيئة تعليمية محفزة وآمنة تساعد الطلاب على اكتشاف قدراتهم، وتنمية مهاراتهم، وتعزيز التفكير والإبداع، وبناء شخصية متوازنة قادرة على مواكبة تحديات المستقبل وصناعة أثر إيجابي في المجتمع.",
+  description: "اكتشف مدارس المعالي الإبداعية الأهلية: قسم وطني للبنين وقسم عالمي من الروضة حتى الثانوية، في بيئة تعليمية تنمّي المعرفة والإبداع والطموح.",
+  openGraph: {
+    type: "website",
+    locale: "ar_SA",
+    siteName: "مدارس المعالي الإبداعية الأهلية",
+    title: "مدارس المعالي الإبداعية الأهلية",
+    description: "تعرف على مدارسنا ومراحلنا التعليمية في القسم الوطني للبنين والقسم العالمي من الروضة حتى الثانوية.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -16,7 +16,7 @@ export default function HeroParticles() {
     const field = fieldRef.current;
     const hero = field?.closest("section");
     if (!field || !hero) return;
-    const media = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const media = window.matchMedia("(prefers-reduced-motion: no-preference)");
     let dispose = () => {};
 
     const setup = () => {
@@ -24,53 +24,86 @@ export default function HeroParticles() {
       if (!media.matches) return;
       let cancelled = false;
       let cleanup = () => {};
-      dispose = () => { cancelled = true; cleanup(); };
+      let firstPointer: PointerEvent | null = null;
+      let firstPointerReleased = false;
+      const trackRelease = (event: PointerEvent) => {
+        if (event.pointerId === firstPointer?.pointerId) firstPointerReleased = true;
+      };
+      const removeReleaseTracking = () => {
+        window.removeEventListener("pointerup", trackRelease);
+        window.removeEventListener("pointercancel", trackRelease);
+      };
+      const removeIntent = () => {
+        hero.removeEventListener("pointermove", start);
+        hero.removeEventListener("pointerdown", start);
+      };
+      dispose = () => { cancelled = true; removeIntent(); removeReleaseTracking(); cleanup(); };
 
+      const start = (event: PointerEvent) => {
+      if (!event.isPrimary) return;
+      firstPointer = event;
+      removeIntent();
+      window.addEventListener("pointerup", trackRelease, { passive: true });
+      window.addEventListener("pointercancel", trackRelease, { passive: true });
       void import("gsap").then(({ gsap }) => {
+        removeReleaseTracking();
         if (cancelled) return;
         const tiles = Array.from(field.querySelectorAll<HTMLElement>("[data-hero-tile]"));
-        let points: { x: number; y: number }[] = [];
+        let points: { x: number; y: number; visible: boolean; opacity: number }[] = [];
+        let needsMeasure = true;
+        let hasTransforms = false;
         const active = new Set<number>();
         let frame = 0;
         let pointerX = 0;
         let pointerY = 0;
         let visible = true;
+        let touchPointerId: number | null = null;
+        let usingTouch = false;
+        let releaseTimer: ReturnType<typeof setTimeout> | undefined;
 
         const measure = () => {
+          needsMeasure = false;
           points = tiles.map((tile) => {
             const group = tile.parentElement!;
             return {
               x: group.offsetLeft - group.offsetWidth / 2 + tile.offsetLeft + tile.offsetWidth / 2,
               y: group.offsetTop - group.offsetHeight / 2 + tile.offsetTop + tile.offsetHeight / 2,
+              visible: tile.offsetWidth > 0 && tile.offsetHeight > 0,
+              opacity: parseFloat(getComputedStyle(tile).opacity),
             };
           });
         };
         const restore = (index: number, immediate = false) => {
           gsap.to(tiles[index], {
-            x: 0, y: 0, rotation: 0, scale: 1, opacity: 0.24,
+            x: 0, y: 0, rotation: 0, scale: 1, opacity: points[index].opacity,
             duration: immediate ? 0 : 1.15,
             ease: "back.out(1.35)", overwrite: true,
           });
           active.delete(index);
         };
         const reset = (immediate = false) => {
+          clearTimeout(releaseTimer);
+          touchPointerId = null;
           cancelAnimationFrame(frame);
           frame = 0;
           active.forEach((index) => restore(index, immediate));
-          if (immediate) {
+          if (immediate && hasTransforms) {
             gsap.killTweensOf(tiles);
             gsap.set(tiles, { clearProps: "transform,opacity" });
+            hasTransforms = false;
           }
         };
         const update = () => {
           frame = 0;
           if (!visible || document.hidden) return;
+          if (needsMeasure) measure();
           // One rect read accounts for ScrollSmoother's transformed container.
           const bounds = field.getBoundingClientRect();
           const x = pointerX - bounds.left;
           const y = pointerY - bounds.top;
-          const radius = 210;
+          const radius = usingTouch ? 180 : 210;
           points.forEach((point, index) => {
+            if (!point.visible) return;
             const dx = point.x - x;
             const dy = point.y - y;
             const distance = Math.hypot(dx, dy);
@@ -83,51 +116,95 @@ export default function HeroParticles() {
             const spreadX = quadrant % 2 === 0 ? -1 : 1;
             const spreadY = quadrant < 2 ? -1 : 1;
             // A gentle twist and extra separation break each four-piece motif apart.
+            hasTransforms = true;
             gsap.to(tiles[index], {
               x: ((distance ? dx / distance : spreadX) * 110 + spreadX * 34) * strength,
               y: ((distance ? dy / distance : spreadY) * 110 + spreadY * 34) * strength,
               rotation: spreadX * (18 + quadrant * 9) * strength,
               scale: 1 + strength * 0.2,
-              opacity: 0.24 + strength * 0.32,
-              duration: 0.65, ease: "power3.out", overwrite: true,
+              opacity: point.opacity + strength * 0.32,
+              duration: usingTouch ? 0.35 : 0.65, ease: "power3.out", overwrite: true,
             });
             active.add(index);
           });
         };
         const move = (event: PointerEvent) => {
-          if (event.pointerType === "touch" || !visible || document.hidden) return;
+          if (!visible || document.hidden || !event.isPrimary) return;
+          if (event.pointerType === "touch" && event.pointerId !== touchPointerId) return;
+          usingTouch = event.pointerType === "touch";
           pointerX = event.clientX;
           pointerY = event.clientY;
           // Coalesce pointer events; no perpetual animation/ticker loop.
           if (!frame) frame = requestAnimationFrame(update);
         };
-        const leave = () => reset();
+        const press = (event: PointerEvent) => {
+          if (event.pointerType !== "touch" || !event.isPrimary) return;
+          clearTimeout(releaseTimer);
+          touchPointerId = event.pointerId;
+          move(event);
+        };
+        const release = (event: PointerEvent) => {
+          if (event.pointerId !== touchPointerId) return;
+          touchPointerId = null;
+          // Keep brief taps visible before the pieces settle back into their mark.
+          releaseTimer = setTimeout(() => reset(), 160);
+        };
+        const cancel = (event: PointerEvent) => {
+          if (event.pointerId === touchPointerId) reset();
+        };
+        const leave = (event: PointerEvent) => {
+          if (event.pointerType !== "touch") reset();
+        };
+        const blur = () => reset();
         const hide = () => { if (document.hidden) reset(true); };
         const observer = new IntersectionObserver(([entry]) => {
           visible = entry.isIntersecting;
           if (!visible) reset(true);
         });
-        const resize = new ResizeObserver(() => { reset(true); measure(); });
-        measure();
+        const resize = new ResizeObserver(() => {
+          if (points.length) reset(true);
+          needsMeasure = true;
+        });
         observer.observe(hero);
         resize.observe(field);
+        // Passive listeners preserve native touch scrolling and button/link taps.
+        hero.addEventListener("pointerdown", press, { passive: true });
         hero.addEventListener("pointermove", move, { passive: true });
         hero.addEventListener("pointerleave", leave);
-        window.addEventListener("blur", leave);
+        window.addEventListener("pointerup", release, { passive: true });
+        window.addEventListener("pointercancel", cancel, { passive: true });
+        window.addEventListener("blur", blur);
         document.addEventListener("visibilitychange", hide);
+
+        // Replay the initial position, even if a short tap ended during import.
+        if (firstPointer) {
+          usingTouch = firstPointer.pointerType === "touch";
+          pointerX = firstPointer.clientX;
+          pointerY = firstPointer.clientY;
+          frame = requestAnimationFrame(update);
+          if (usingTouch && !firstPointerReleased) touchPointerId = firstPointer.pointerId;
+          else if (usingTouch) releaseTimer = setTimeout(() => reset(), 250);
+        }
 
         cleanup = () => {
           reset(true);
           observer.disconnect();
           resize.disconnect();
+          hero.removeEventListener("pointerdown", press);
           hero.removeEventListener("pointermove", move);
           hero.removeEventListener("pointerleave", leave);
-          window.removeEventListener("blur", leave);
+          window.removeEventListener("pointerup", release);
+          window.removeEventListener("pointercancel", cancel);
+          window.removeEventListener("blur", blur);
           document.removeEventListener("visibilitychange", hide);
         };
       }).catch((error: unknown) => {
+        removeReleaseTracking();
         if (!cancelled) console.error("Hero animation unavailable; keeping the static pattern.", error);
       });
+      };
+      hero.addEventListener("pointermove", start, { passive: true });
+      hero.addEventListener("pointerdown", start, { passive: true });
     };
     setup();
     media.addEventListener("change", setup);

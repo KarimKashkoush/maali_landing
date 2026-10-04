@@ -17,9 +17,11 @@ export default function CursorFollower() {
       let destroy = () => {};
       dispose = () => {
         cancelled = true;
+        document.removeEventListener("pointermove", start);
         destroy();
       };
 
+      const start = () => {
       void Promise.all([import("mouse-follower"), import("gsap")])
         .then(([{ default: MouseFollower }, { gsap }]) => {
           if (cancelled) return;
@@ -83,6 +85,9 @@ export default function CursorFollower() {
         .catch((error: unknown) => {
           if (!cancelled) console.error("Mouse Follower could not load.", error);
         });
+      };
+      // A decorative cursor is only needed after the first pointer movement.
+      document.addEventListener("pointermove", start, { once: true, passive: true });
     };
 
     setup();

@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useUi } from "../providers/UiProvider";
@@ -45,34 +44,37 @@ export default function Navbar() {
             <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-background/90 shadow-sm backdrop-blur-xl" dir={language === "ar" ? "rtl" : "ltr"}>
                   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex h-20 items-center justify-between gap-4">
-                              <Link href="#home" className="shrink-0" aria-label={t.schoolName}>
+                              {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Native section anchors avoid route prefetch and work before hydration. */}
+                              <a href="/#home" className="shrink-0" aria-label={t.schoolName}>
                                     <Image
                                           src="/logo.png"
                                           alt={t.schoolName}
                                           width={150}
                                           height={60}
-                                          priority
+                                          sizes="144px"
+                                          fetchPriority="low"
                                           className="hidden h-auto w-36 dark:brightness-0 dark:invert md:block"
                                     />
                                     <Image
-                                          src="/mini_logo.png"
+                                          src="/mini_logo_display.png"
                                           alt={t.schoolName}
                                           width={40}
-                                          height={38}
-                                          priority
+                                          height={40}
+                                          sizes="40px"
+                                          fetchPriority="low"
                                           className="block md:hidden"
                                     />
-                              </Link>
+                              </a>
 
                               <div className="hidden items-center gap-5 lg:flex xl:gap-7">
                                     {links.map((link) => (
-                                          <Link
+                                          <a
                                                 key={link.href}
-                                                href={link.href}
+                                                href={`/${link.href}`}
                                                 className="group inline-flex items-center py-2 text-sm font-semibold text-foreground/75 transition-colors hover:text-brand focus-visible:text-brand"
                                           >
                                                 <RollingLabel>{link.name}</RollingLabel>
-                                          </Link>
+                                          </a>
                                     ))}
                               </div>
 
@@ -81,7 +83,7 @@ export default function Navbar() {
                                     <button
                                           type="button"
                                           onClick={toggleLanguage}
-                                          aria-label={t.actions.changeLanguage}
+                                          aria-label={`${language === "ar" ? "EN" : "ع"} — ${t.actions.changeLanguage}`}
                                           title={t.actions.changeLanguage}
                                           className="flex size-10 shrink-0 items-center justify-center rounded-xl text-foreground/75 transition-colors hover:bg-accent hover:text-brand"
                                     >
@@ -139,14 +141,14 @@ export default function Navbar() {
                               <div id="mobile-navigation" className="border-t border-border py-3 lg:hidden">
                                     <div className="grid gap-1 pb-2">
                                           {links.map((link) => (
-                                                <Link
+                                                <a
                                                       key={link.href}
-                                                      href={link.href}
+                                                      href={`/${link.href}`}
                                                       onClick={() => setMenuOpen(false)}
                                                       className="group inline-flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-foreground/80 transition-colors hover:bg-accent hover:text-brand focus-visible:text-brand"
                                                 >
                                                       <RollingLabel>{link.name}</RollingLabel>
-                                                </Link>
+                                                </a>
                                           ))}
                                     </div>
                               </div>

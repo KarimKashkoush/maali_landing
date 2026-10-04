@@ -21,6 +21,13 @@ export async function generateMetadata({
   return {
     title: `${school.title.ar} | مدارس المعالي الإبداعية`,
     description: school.description.ar,
+    openGraph: {
+      type: "website",
+      locale: "ar_SA",
+      siteName: "مدارس المعالي الإبداعية الأهلية",
+      title: `${school.title.ar} | مدارس المعالي الإبداعية`,
+      description: school.description.ar,
+    },
   };
 }
 

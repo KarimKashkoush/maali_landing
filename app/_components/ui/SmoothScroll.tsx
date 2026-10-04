@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { onScrollIntent } from "@/lib/scroll-intent";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -15,12 +16,19 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       if (!media.matches) return;
       let cancelled = false;
       let cleanup = () => {};
+      let cancelIntent = () => {};
       cancelSetup = () => {
         cancelled = true;
+        cancelIntent();
         cleanup();
+        document.documentElement.classList.remove("gsap-smooth-scroll");
       };
 
       // Reduced-motion users keep native scrolling and never download the animation library.
+      cancelIntent = onScrollIntent(() => {
+      // Stop native CSS smooth anchors before their default action. Otherwise a
+      // pending browser animation can fight the newly initialized smoother.
+      document.documentElement.classList.add("gsap-smooth-scroll");
       void Promise.all([
         import("gsap"),
         import("gsap/ScrollTrigger"),
@@ -74,12 +82,17 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       };
 
       let disposed = false;
+      let hashFrame = 0;
       // Font metrics can change the section positions after the first paint.
       void document.fonts.ready.then(() => {
         if (disposed) return;
-        ScrollTrigger.refresh();
-        const target = findTarget(location.hash);
-        if (target) scrollToTarget(target, false);
+        // Let other scroll-intent consumers finish creating their pin spacers.
+        hashFrame = requestAnimationFrame(() => {
+          if (disposed) return;
+          ScrollTrigger.refresh();
+          const target = findTarget(location.hash);
+          if (target) scrollToTarget(target, false);
+        });
       });
 
       document.addEventListener("click", onAnchorClick, true);
@@ -87,14 +100,16 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
       cleanup = () => {
         disposed = true;
+        cancelAnimationFrame(hashFrame);
         document.removeEventListener("click", onAnchorClick, true);
         window.removeEventListener("hashchange", onHashChange);
         smoother.kill();
         document.documentElement.classList.remove("gsap-smooth-scroll");
       };
       }).catch((error: unknown) => {
+        document.documentElement.classList.remove("gsap-smooth-scroll");
         if (!cancelled) console.error("Smooth scrolling could not load; native scrolling remains available.", error);
-      });
+      }); });
     };
 
     setup();
