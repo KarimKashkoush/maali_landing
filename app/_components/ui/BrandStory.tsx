@@ -78,8 +78,8 @@ export default function BrandStory() {
               const label = `story-step-${index}`;
               timeline.addLabel(label);
               timeline
-                .set(panels[index - 1], { autoAlpha: 0, y: -26 }, label)
-                .set(panel, { autoAlpha: 1, y: 0 }, label)
+                .to(panels[index - 1], { autoAlpha: 0, y: -26, duration: 0.25 }, label)
+                .to(panel, { autoAlpha: 1, y: 0, duration: 0.25 }, label)
                 .to(pieces[index - 1], { opacity: 0.24, scale: 0.86, duration: 0.25 }, label)
                 .to(pieces[index], { opacity: 1, scale: 1.12, duration: 0.25 }, label)
                 .to({}, { duration: 0.7 });
