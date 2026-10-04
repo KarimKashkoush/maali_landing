@@ -142,7 +142,7 @@ export default function SchoolVideo() {
       id="school-film"
       ref={sectionRef}
       aria-labelledby="school-film-caption"
-      className="relative isolate grid h-screen w-full scroll-mt-20 place-items-center overflow-hidden bg-brand-solid text-white [container-type:size]"
+      className="relative isolate grid h-[clamp(22rem,58svh,42rem)] w-full scroll-mt-20 place-items-center overflow-hidden bg-brand-solid text-white [container-type:size]"
     >
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_25%_30%,var(--gold-soft),transparent_65%),linear-gradient(135deg,#1c5954,#102f2d)]" aria-hidden="true" />
       {loadVideo && schoolVideo.source && (

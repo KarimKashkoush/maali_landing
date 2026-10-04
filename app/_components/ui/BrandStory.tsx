@@ -5,6 +5,9 @@ import Image from "next/image";
 import { useUi } from "../providers/UiProvider";
 
 const letters = ["M", "C", "S"] as const;
+// Layout translation stays on the wrapper; GSAP owns only the inner panel's transform.
+const panelLayout = "absolute inset-x-[.15rem] top-1/2 -translate-y-1/2 motion-reduce:static motion-reduce:translate-y-0 md:inset-x-[clamp(1rem,4vw,4rem)]";
+const staticPanel = "motion-reduce:visible motion-reduce:border-b motion-reduce:border-white/12 motion-reduce:py-4 motion-reduce:opacity-100";
 
 export default function BrandStory() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -146,11 +149,11 @@ export default function BrandStory() {
 
           <div dir={language === "ar" ? "rtl" : "ltr"} className="relative min-h-full px-0 text-start motion-reduce:grid motion-reduce:min-h-0 motion-reduce:gap-8 md:min-h-[29rem] md:px-[clamp(1rem,4vw,4rem)] [@media(min-width:768px)_and_(max-height:650px)]:min-h-[23rem]">
             {t.brandStory.steps.map((step, index) => (
-              <article
-                key={letters[index]}
-                className={`absolute inset-x-[.15rem] top-1/2 -translate-y-[38%] motion-reduce:static motion-reduce:visible motion-reduce:translate-y-0 motion-reduce:border-b motion-reduce:border-white/12 motion-reduce:py-4 motion-reduce:opacity-100 md:inset-x-[clamp(1rem,4vw,4rem)] md:-translate-y-[43%] ${index > 0 ? "invisible opacity-0" : ""}`}
-                data-story-panel
-              >
+              <div key={letters[index]} className={panelLayout} data-story-layout>
+                <article
+                  className={`${staticPanel} ${index > 0 ? "invisible opacity-0" : ""}`}
+                  data-story-panel
+                >
                 <div className="mb-4 flex items-baseline gap-1.5 text-xs leading-none font-bold tracking-[.08em] text-white/38 [direction:ltr]">
                   <span className="text-[1.1rem] text-[#d6aa48]">{String(index + 1).padStart(2, "0")}</span>
                   <span>/ 03</span>
@@ -162,11 +165,14 @@ export default function BrandStory() {
                   <h3 className="max-w-[14ch] text-[clamp(2rem,9vw,3rem)] leading-[1.14] font-black tracking-[-.035em] md:max-w-[11ch] md:text-[clamp(2.2rem,4vw,4rem)] [@media(min-width:768px)_and_(max-height:650px)]:text-[clamp(2rem,5vh,3.4rem)]">{step.title}</h3>
                 )}
                 <p className="mt-3 max-w-xl text-[.95rem] leading-[1.75] text-white/73 md:mt-5 md:text-[clamp(1rem,1.6vw,1.2rem)] md:leading-8">{step.description}</p>
-              </article>
+                </article>
+              </div>
             ))}
 
-            <div className="invisible absolute inset-x-[.15rem] top-1/2 -translate-y-[38%] opacity-0 motion-reduce:static motion-reduce:visible motion-reduce:translate-y-0 motion-reduce:border-b motion-reduce:border-white/12 motion-reduce:py-4 motion-reduce:opacity-100 md:inset-x-[clamp(1rem,4vw,4rem)] md:-translate-y-[43%]" data-story-outro>
-              <h3 className="max-w-[14ch] text-[clamp(2rem,9vw,3rem)] leading-[1.14] font-black tracking-[-.035em] md:max-w-[11ch] md:text-[clamp(2.2rem,4vw,4rem)]">{t.brandStory.finalTitle}</h3>
+            <div className={panelLayout} data-story-layout>
+              <div className={`invisible opacity-0 ${staticPanel}`} data-story-outro>
+                <h3 className="max-w-[14ch] text-[clamp(2rem,9vw,3rem)] leading-[1.14] font-black tracking-[-.035em] md:max-w-[11ch] md:text-[clamp(2.2rem,4vw,4rem)]">{t.brandStory.finalTitle}</h3>
+              </div>
             </div>
           </div>
 
