@@ -56,3 +56,11 @@ Run `node --experimental-strip-types --test tests/scroll-intent.test.mjs` to che
 - All new section styling uses Tailwind. No new font, animation library, student photos, or external service was added. Re-run production Lighthouse to measure the net effect; no new score is implied by the build checks.
 
 Run `node --experimental-strip-types --test tests/*.test.mjs` for content, medal arithmetic, contact-link validation, and scroll-intent tests.
+
+## Entrance animations and loading UI
+
+- Animate.css supplies `fadeInDown`, `fadeInRight`, and `pulse`. Only those source styles plus the library's base/variables are imported, not its full animation catalog or any external CDN.
+- Below-the-fold titles/cards reveal once when visible using a shared IntersectionObserver. Animation classes are removed on completion, unmount, keyboard focus, or a change to reduced motion. No additional scroll/frame loop is used, and HTML remains visible if JavaScript is unavailable.
+- The hero and GSAP-owned pin/track elements are not wrapped in reveal animations. Student tab changes animate newly mounted cards without changing their layout.
+- `app/loading.tsx` uses the original logo clipped into two halves: the left column emerges right-to-left behind the fixed right column, with a gentle pulse while the route is pending. It follows the actual Next.js route loading lifecycle; there is no forced splash-screen delay, fake progress percentage, or wait for background video/assets. Fast or prefetched routes may not show it at all.
+- Reduced-motion users see a static loader. Both halves share the same optimized image request. The normal page is never held back just to display the animation.

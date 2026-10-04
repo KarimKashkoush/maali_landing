@@ -3,6 +3,7 @@
 import { Award, ShieldCheck, Trophy } from "lucide-react";
 import { countMedals, medalLabels, medalsByType, medalTypes, schoolAchievements, totalMedals, type MedalType } from "@/lib/achievements";
 import { useUi } from "../providers/UiProvider";
+import Reveal from "./Reveal";
 
 const medalPalette: Record<MedalType, { base: string; light: string; edge: string }> = {
   diamond: { base: "#95c6cb", light: "#e7f7f5", edge: "#4c8c94" },
@@ -30,12 +31,12 @@ export default function SchoolAchievements() {
   return <section id="achievements" aria-labelledby="achievements-title" className="scroll-mt-20 bg-[#f5f2e9] py-20 text-[#153f3b] sm:py-28 dark:bg-[#102c29] dark:text-white">
     <div className="mx-auto max-w-7xl px-5 sm:px-8">
       <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-        <div>
+        <Reveal>
           <p className="mb-4 flex items-center gap-3 text-sm font-bold"><span className="h-px w-9 bg-[#a87925]" />{ar ? "حصاد العام الماضي" : "LAST YEAR'S HIGHLIGHTS"}</p>
           <h2 id="achievements-title" className="max-w-[18ch] text-4xl leading-[1.6] font-black text-balance sm:text-5xl">{ar ? "إنجازات تُلهم، وطموح لا يتوقف." : "Achievements that inspire. Ambition without limits."}</h2>
           <p className="mt-5 max-w-lg text-base leading-8 opacity-75">{ar ? "من منصات التتويج إلى ساحات المنافسة، نحتفي بإنجازات طلابنا التي صنعت عامًا نفخر به." : "From competition halls to award podiums, we celebrate the students who made it a year to remember."}</p>
-        </div>
-        <div className="relative overflow-hidden rounded-[1.75rem] bg-[#163f3a] p-7 text-white sm:p-10">
+        </Reveal>
+        <Reveal delay={100} className="relative overflow-hidden rounded-[1.75rem] bg-[#163f3a] p-7 text-white sm:p-10">
           <Trophy className="pointer-events-none absolute -end-6 top-3 size-40 rotate-12 text-white/[.035]" strokeWidth={1} aria-hidden="true" />
           <p className="relative text-sm text-white/75">{ar ? "إجمالي ميداليات العام الماضي" : "TOTAL MEDALS LAST YEAR"}</p>
           <div className="relative mt-4 flex items-baseline gap-4"><strong data-medal-total className="text-[clamp(5rem,12vw,8rem)] leading-none font-black tabular-nums text-[#edc36c]">{totalMedals}</strong><span className="text-xl font-bold">{ar ? "ميدالية" : "medals"}</span></div>
@@ -43,14 +44,14 @@ export default function SchoolAchievements() {
             {medalTypes.map((type) => <li key={type} className="flex flex-col items-center gap-2 text-center"><Medal type={type} className="h-12 w-9" /><span className="text-sm font-bold">{medalsByType[type]} {medalLabels[type][language]}</span></li>)}
           </ul>
           <p className="mt-5 text-xs leading-6 text-white/65">{ar ? "المجموع للميداليات فقط؛ الجوائز والمراكز مذكورة بشكل مستقل أدناه." : "Medals only. Awards and rankings are listed separately below."}</p>
-        </div>
+        </Reveal>
       </div>
 
       <div className="mt-12 grid gap-5 md:grid-cols-2">
         {schoolAchievements.map((achievement, index) => {
           const medalCount = countMedals(achievement.medals);
           const Icon = achievement.distinction === "students" ? ShieldCheck : achievement.distinction === "ranking" ? Trophy : Award;
-          return <article key={achievement.id} data-achievement={achievement.id} className="relative flex flex-col rounded-2xl border border-[#153f3b]/10 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-[#193c36]">
+          return <Reveal as="article" key={achievement.id} delay={(index % 2) * 90} data-achievement={achievement.id} className="relative flex flex-col rounded-2xl border border-[#153f3b]/10 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-[#193c36]">
             <div className="mb-4 flex items-center justify-between gap-3"><span className="text-xs tabular-nums opacity-45" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className="rounded-full bg-[#f5f2e9] px-3 py-1.5 text-xs font-bold text-[#745015] dark:bg-white/10 dark:text-[#edc36c]">{medalCount ? `${medalCount} ${ar ? (medalCount === 1 ? "ميدالية" : "ميداليات") : (medalCount === 1 ? "medal" : "medals")}` : achievement.distinction === "ranking" ? (ar ? "مركز على مستوى المملكة" : "NATIONAL RANKING") : (ar ? "جائزة وتميّز" : "AWARD & RECOGNITION")}</span></div>
             <h3 className="text-xl leading-[1.7] font-black sm:text-2xl">{achievement.title[language]}</h3>
             <p className="mt-2 text-sm leading-7 opacity-70">{achievement.detail[language]}</p>
@@ -59,7 +60,7 @@ export default function SchoolAchievements() {
                 {medalTypes.flatMap((type) => Array.from({ length: achievement.medals?.[type] ?? 0 }, (_, medalIndex) => <Medal key={`${type}-${medalIndex}`} type={type} />))}
               </div>
             </div> : <div className="mt-auto flex items-center gap-4 pt-7 text-[#a87925] dark:text-[#edc36c]"><Icon className="size-11" strokeWidth={1.3} aria-hidden="true" />{achievement.distinction === "ranking" && <span className="text-3xl font-black">{ar ? "المركز 6" : "6th place"}</span>}{achievement.distinction === "students" && <span className="text-xl font-black">{ar ? "2 طلاب" : "2 students"}</span>}</div>}
-          </article>;
+          </Reveal>;
         })}
       </div>
     </div>

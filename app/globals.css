@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "mouse-follower/dist/mouse-follower.min.css";
+/* Import only the three Animate.css effects used by this site, not the full catalog. */
+@import "animate.css/source/_vars.css";
+@import "animate.css/source/_base.css";
+@import "animate.css/source/fading_entrances/fadeInDown.css";
+@import "animate.css/source/fading_entrances/fadeInRight.css";
+@import "animate.css/source/attention_seekers/pulse.css";
 
 @custom-variant dark (&:is(.dark *));
 

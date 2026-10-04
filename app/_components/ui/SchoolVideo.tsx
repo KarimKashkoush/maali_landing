@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { schoolVideo } from "@/lib/school-video";
 import { useUi } from "../providers/UiProvider";
+import Reveal from "./Reveal";
 
 type NetworkConnection = EventTarget & {
   saveData?: boolean;
@@ -81,9 +82,9 @@ export default function SchoolVideo() {
         className="pointer-events-none absolute inset-0 -z-10 size-full object-cover"
       />
       <div className="pointer-events-none absolute inset-0 bg-black/65 shadow-[inset_0_0_8rem_rgb(0_0_0_/_0.55)]" aria-hidden="true" />
-      <h2 id="school-film-caption" className="relative mx-auto max-w-5xl px-6 text-center text-[clamp(2rem,4.5vw,4.5rem)] leading-[1.6] font-black text-balance drop-shadow-lg sm:px-10">
+      <Reveal as="h2" id="school-film-caption" className="relative mx-auto max-w-5xl px-6 text-center text-[clamp(2rem,4.5vw,4.5rem)] leading-[1.6] font-black text-balance drop-shadow-lg sm:px-10">
         {schoolVideo.caption[language]}
-      </h2>
+      </Reveal>
     </section>
   );
 }

@@ -77,21 +77,52 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       };
 
       const onHashChange = () => {
+        if (contentRef.current?.querySelector("[data-logo-loading]")) {
+          restorePendingHash();
+          return;
+        }
         const target = findTarget(location.hash);
         if (target) scrollToTarget(target, true);
+        else restorePendingHash();
       };
 
       let disposed = false;
       let hashFrame = 0;
+      let pendingHash: MutationObserver | null = null;
+      function restorePendingHash() {
+        const content = contentRef.current;
+        if (pendingHash || !content || !location.hash || !content.querySelector("[data-logo-loading]")) return;
+        // A streamed route can still be showing loading.tsx when fonts/GSAP
+        // are ready. Wait for its actual target, not an arbitrary timeout.
+        pendingHash = new MutationObserver(() => {
+          if (content.querySelector("[data-logo-loading]")) return;
+          pendingHash?.disconnect();
+          pendingHash = null;
+          hashFrame = requestAnimationFrame(() => {
+            hashFrame = requestAnimationFrame(() => {
+              if (disposed) return;
+              ScrollTrigger.refresh();
+              const target = findTarget(location.hash);
+              if (target) scrollToTarget(target, false);
+            });
+          });
+        });
+        pendingHash.observe(content, { childList: true, subtree: true });
+      }
       // Font metrics can change the section positions after the first paint.
       void document.fonts.ready.then(() => {
         if (disposed) return;
         // Let other scroll-intent consumers finish creating their pin spacers.
         hashFrame = requestAnimationFrame(() => {
           if (disposed) return;
+          if (contentRef.current?.querySelector("[data-logo-loading]")) {
+            restorePendingHash();
+            return;
+          }
           ScrollTrigger.refresh();
           const target = findTarget(location.hash);
           if (target) scrollToTarget(target, false);
+          else restorePendingHash();
         });
       });
 
@@ -100,6 +131,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
       cleanup = () => {
         disposed = true;
+        pendingHash?.disconnect();
         cancelAnimationFrame(hashFrame);
         document.removeEventListener("click", onAnchorClick, true);
         window.removeEventListener("hashchange", onHashChange);

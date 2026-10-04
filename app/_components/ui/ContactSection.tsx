@@ -6,6 +6,7 @@ import { contactWhatsApp, studentStages } from "@/lib/home-content";
 import { whatsappLink } from "@/lib/contact";
 import { useUi } from "../providers/UiProvider";
 import SocialLinks from "./SocialLinks";
+import Reveal from "./Reveal";
 
 const inputStyle = "mt-2 w-full rounded-xl border border-border bg-background px-4 py-3.5 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-brand focus:ring-2 focus:ring-brand/20";
 
@@ -32,7 +33,7 @@ export default function ContactSection() {
   return (
     <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 bg-background py-20 sm:py-28">
       <div className="mx-auto grid max-w-7xl items-start gap-12 px-5 sm:px-8 lg:grid-cols-[.8fr_1.2fr] lg:gap-24">
-        <div className="lg:sticky lg:top-32">
+        <Reveal className="lg:sticky lg:top-32">
           <p className="mb-4 text-sm font-bold text-brand">{ar ? "بابنا مفتوح لأسئلتكم" : "WE ARE HERE TO HELP"}</p>
           <h2 id="contact-title" className="text-4xl leading-[1.6] font-black sm:text-5xl">{ar ? "لنتحدث عن مستقبل أبنائكم." : "Let's talk about your child's future."}</h2>
           <p className="mt-5 max-w-md leading-8 text-muted-foreground">{ar ? "يسعدنا التعرف عليكم والإجابة عن استفساراتكم حول المراحل التعليمية والقبول والحياة في المعالي." : "We would love to answer your questions about our school stages, admissions and life at Maali."}</p>
@@ -42,7 +43,8 @@ export default function ContactSection() {
           </div>
           <p className="mb-4 text-sm font-bold">{ar ? "تابع يوميات المعالي" : "Follow life at Maali"}</p>
           <SocialLinks align="start" />
-        </div>
+        </Reveal>
+        <Reveal delay={100}>
         <form onSubmit={submit} onChange={() => { setPreview(null); setLink(null); }} className="rounded-[1.75rem] border border-border bg-card p-5 sm:p-9" aria-label={ar ? "نموذج التواصل" : "Contact form"}>
           <div className="grid gap-5 sm:grid-cols-2">
             <label className="text-sm font-bold">{ar ? "الاسم الكامل *" : "Full name *"}<input name="name" autoComplete="name" required minLength={2} maxLength={100} className={inputStyle} placeholder={ar ? "كيف نناديك؟" : "Your name"} /></label>
@@ -60,6 +62,7 @@ export default function ContactSection() {
             {link ? <a href={link} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex rounded-lg bg-brand-solid px-5 py-3 text-sm font-bold text-white">{ar ? "افتح واتساب وأكمل الإرسال" : "Open WhatsApp to send"}</a> : <p className="mt-4 text-sm text-muted-foreground">{ar ? "سيُفعّل رابط واتساب بعد إضافة رقم المدرسة الرسمي." : "The WhatsApp link will be enabled once the official number is added."}</p>}
           </div>}
         </form>
+        </Reveal>
       </div>
     </section>
   );
