@@ -52,7 +52,7 @@ export default function SchoolsDialogContent({ open, onOpenChange, triggerRef }:
             <div className="mt-5 grid gap-4">
               {schoolGroups.map((group) => (
                 <section key={group.id} className="rounded-3xl border border-border bg-muted/55 p-[clamp(1rem,2vw,1.4rem)]">
-                  <div className="flex items-start gap-3.5">
+                  <div className="flex items-center gap-3.5">
                     <span className="grid size-11 shrink-0 place-items-center rounded-[.9rem] bg-brand-soft text-brand [&_svg]:size-[1.35rem]">
                       <School aria-hidden="true" />
                     </span>

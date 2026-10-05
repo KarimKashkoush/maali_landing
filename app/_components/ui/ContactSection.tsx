@@ -2,11 +2,12 @@
 
 import { useState, type FormEvent } from "react";
 import { ArrowUpLeft, MessageCircle } from "lucide-react";
-import { contactWhatsApp, studentStages } from "@/lib/home-content";
+import { contactWhatsApp, socialUrls, studentStages } from "@/lib/home-content";
 import { whatsappLink } from "@/lib/contact";
 import { useUi } from "../providers/UiProvider";
 import SocialLinks from "./SocialLinks";
 import Reveal from "./Reveal";
+import SchoolLocations from "./SchoolLocations";
 
 const inputStyle = "mt-2 w-full rounded-xl border border-border bg-background px-4 py-3.5 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-brand focus:ring-2 focus:ring-brand/20";
 
@@ -37,9 +38,9 @@ export default function ContactSection() {
           <p className="mb-4 text-sm font-bold text-brand">{ar ? "بابنا مفتوح لأسئلتكم" : "WE ARE HERE TO HELP"}</p>
           <h2 id="contact-title" className="text-4xl leading-[1.6] font-black sm:text-5xl">{ar ? "لنتحدث عن مستقبل أبنائكم." : "Let's talk about your child's future."}</h2>
           <p className="mt-5 max-w-md leading-8 text-muted-foreground">{ar ? "يسعدنا التعرف عليكم والإجابة عن استفساراتكم حول المراحل التعليمية والقبول والحياة في المعالي." : "We would love to answer your questions about our school stages, admissions and life at Maali."}</p>
-          <div className="my-8 flex items-start gap-3 border-y border-border py-6">
-            <MessageCircle className="mt-1 size-6 shrink-0 text-brand" aria-hidden="true" />
-            <div><h3 className="font-bold">{ar ? "نتواصل عبر واتساب" : "Connect on WhatsApp"}</h3><p className="mt-2 text-sm leading-7 text-muted-foreground">{contactWhatsApp || (ar ? "سيُضاف رقم المدرسة الرسمي قريبًا." : "The school's official number will be added soon.")}</p></div>
+          <div className="my-8 flex items-center gap-3 border-y border-border py-6">
+            <MessageCircle className="size-6 shrink-0 text-brand" aria-hidden="true" />
+            <div><h3 className="font-bold">{ar ? "نتواصل عبر واتساب" : "Connect on WhatsApp"}</h3><a href={socialUrls.WhatsApp} target="_blank" rel="noopener noreferrer" dir="ltr" className="mt-2 inline-block cursor-pointer text-sm leading-7 text-muted-foreground hover:text-brand">+{contactWhatsApp}</a></div>
           </div>
           <p className="mb-4 text-sm font-bold">{ar ? "تابع يوميات المعالي" : "Follow life at Maali"}</p>
           <SocialLinks align="start" />
@@ -55,7 +56,7 @@ export default function ContactSection() {
           </div>
           <p className="mt-5 text-xs leading-6 text-muted-foreground">{ar ? "الحقول المعلّمة بـ * مطلوبة. راجع رسالتك قبل فتح واتساب. لا تُرسل البيانات أو تُحفظ في الموقع عند المعاينة." : "Fields marked * are required. Review your message before opening WhatsApp. Previewing does not send or save your data on this website."}</p>
           {!contactWhatsApp && <p className="mt-2 text-xs leading-6 text-muted-foreground">{ar ? "المعاينة متاحة الآن، والإرسال ينتظر إضافة رقم المدرسة." : "Preview is available; sending awaits the school's number."}</p>}
-          <button type="submit" className="mt-6 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-brand-solid px-6 py-4 font-bold text-white transition-colors hover:bg-[#143f3c]">{ar ? "جهّز رسالتك على واتساب" : "Prepare your WhatsApp message"}<ArrowUpLeft className="size-5 ltr:-rotate-90" aria-hidden="true" /></button>
+          <button type="submit" className="mt-6 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-brand-solid px-6 py-4 font-bold text-white transition-colors hover:bg-[#143f3c]"><span className="leading-snug">{ar ? "جهّز رسالتك على واتساب" : "Prepare your WhatsApp message"}</span><ArrowUpLeft className="size-5 shrink-0 ltr:-rotate-90" aria-hidden="true" /></button>
           {preview && <div role="status" className="mt-6 rounded-xl border border-border bg-background p-5">
             <p className="mb-3 font-bold">{ar ? "معاينة الرسالة — لم تُرسل بعد" : "Message preview — not sent yet"}</p>
             <p className="whitespace-pre-wrap text-sm leading-7">{preview}</p>
@@ -64,6 +65,7 @@ export default function ContactSection() {
         </form>
         </Reveal>
       </div>
+      <SchoolLocations />
     </section>
   );
 }

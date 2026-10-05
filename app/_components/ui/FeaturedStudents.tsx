@@ -26,11 +26,9 @@ export default function FeaturedStudents() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="mb-4 flex items-center gap-2 text-sm font-bold text-brand"><Sparkles className="size-4" />{language === "ar" ? "نفخر بهم" : "OUR PRIDE"}</p>
             <h2 id="students-title" className="text-3xl leading-[1.6] font-black sm:text-5xl">{language === "ar" ? "طلاب يصنعون التميّز" : "Students who shine"}</h2>
             <p className="mt-4 max-w-xl leading-8 text-muted-foreground">{language === "ar" ? "نحتفي بالاجتهاد والطموح في كل مرحلة من رحلة التعلم." : "Celebrating dedication and ambition at every stage of learning."}</p>
           </div>
-          <p className="max-w-xs text-xs leading-6 text-muted-foreground">{language === "ar" ? "الأسماء والترتيب بيانات تجريبية للعرض فقط." : "Names and rankings are fictional preview data."}</p>
         </Reveal>
         <div role="tablist" aria-label={language === "ar" ? "المراحل التعليمية" : "School stages"} className="mt-10 flex flex-wrap gap-2 border-b border-border pb-5">
           {studentStages.map((item, index) => <button key={item.id} ref={(node) => { tabs.current[index] = node; }} id={`stage-tab-${item.id}`} role="tab" aria-selected={active === index} aria-controls="students-panel" tabIndex={active === index ? 0 : -1} onClick={() => setActive(index)} onKeyDown={(event) => onKey(event, index)} className={`cursor-pointer rounded-full px-5 py-2.5 text-sm font-bold transition-colors ${active === index ? "bg-brand-solid text-white" : "bg-muted text-foreground hover:bg-brand/10"}`}>{item.name[language]}</button>)}
@@ -41,7 +39,7 @@ export default function FeaturedStudents() {
               <div className={`relative flex h-40 items-end justify-between overflow-hidden px-6 pb-5 ${student.rank === 1 ? "bg-[#ece8d9]" : student.rank === 2 ? "bg-[#e4eeeb]" : "bg-[#f2e5db]"}`}>
                 <span className="font-black text-7xl leading-none text-[#1c5954]/20" aria-hidden="true">0{student.rank}</span>
                 <GraduationCap className="size-12 text-[#1c5954]/60" strokeWidth={1.2} aria-hidden="true" />
-                <span className="absolute top-4 start-4 flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-black text-[#1c5954]"><Medal className="size-4 text-[#a67620]" />{language === "ar" ? `المركز ${student.rank}` : `Rank ${student.rank}`}</span>
+                <span className="absolute top-4 start-4 flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-black text-[#1c5954]"><Medal className="size-4 shrink-0 text-[#a67620]" aria-hidden="true" /><span className="leading-none">{language === "ar" ? `المركز ${student.rank}` : `Rank ${student.rank}`}</span></span>
               </div>
               <div className="p-6">
                 <p className="text-xs font-bold text-brand">{stage.name[language]}</p>

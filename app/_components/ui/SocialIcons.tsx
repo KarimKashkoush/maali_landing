@@ -11,7 +11,7 @@ function InstagramLogo() {
 function FacebookLogo() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14.2 8.2h3V4.3c-.52-.07-2.3-.23-4.4-.23-4.34 0-7.31 2.65-7.31 7.52v4.2H.58v4.36h4.91V31h6.02V20.15h4.71l.75-4.36h-5.46v-3.77c0-1.26.34-2.12 2.69-2.12Z" transform="scale(.72) translate(3 -1)" />
+      <path d="M14.2 8.2h3V4.3c-.52-.07-2.3-.23-4.4-.23-4.34 0-7.31 2.65-7.31 7.52v4.2H.58v4.36h4.91V31h6.02V20.15h4.71l.75-4.36h-5.46v-3.77c0-1.26.34-2.12 2.69-2.12Z" transform="matrix(.72 0 0 .72 5.598 -.625)" />
     </svg>
   );
 }
@@ -36,7 +36,7 @@ function WhatsappLogo() {
 function SnapchatLogo() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 3.2c-3 0-5 2.1-5 5v2.1c0 .8-.4 1.3-1.2 1.6l-1.4.6c-.5.2-.5.9 0 1.1l1.9.8c.4.2.7.5.8.9.3 1.3 1.1 2 2.4 2.2.7.1 1.1.4 1.3 1 .2.4.6.6 1 .5.7-.2 1.3-.2 2 0 .4.1.8-.1 1-.5.2-.6.6-.9 1.3-1 1.3-.2 2.1-.9 2.4-2.2.1-.4.4-.7.8-.9l1.9-.8c.5-.2.5-.9 0-1.1l-1.4-.6c-.8-.3-1.2-.8-1.2-1.6V8.2c0-2.9-2-5-5-5Z" />
+      <path d="M12 3.2c-3 0-5 2.1-5 5v2.1c0 .8-.4 1.3-1.2 1.6l-1.4.6c-.5.2-.5.9 0 1.1l1.9.8c.4.2.7.5.8.9.3 1.3 1.1 2 2.4 2.2.7.1 1.1.4 1.3 1 .2.4.6.6 1 .5.7-.2 1.3-.2 2 0 .4.1.8-.1 1-.5.2-.6.6-.9 1.3-1 1.3-.2 2.1-.9 2.4-2.2.1-.4.4-.7.8-.9l1.9-.8c.5-.2.5-.9 0-1.1l-1.4-.6c-.8-.3-1.2-.8-1.2-1.6V8.2c0-2.9-2-5-5-5Z" transform="translate(-.8 .887)" />
     </svg>
   );
 }
@@ -44,7 +44,7 @@ function SnapchatLogo() {
 function TiktokLogo() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M14.6 3h3.1a5.2 5.2 0 0 0 3.2 3.2v3.1a8.3 8.3 0 0 1-3.2-1.1v6.2a6.1 6.1 0 1 1-6.1-6.1h.9v3.2a3 3 0 1 0 2.1 2.9V3Z" />
+      <path d="M14.6 3h3.1a5.2 5.2 0 0 0 3.2 3.2v3.1a8.3 8.3 0 0 1-3.2-1.1v6.2a6.1 6.1 0 1 1-6.1-6.1h.9v3.2a3 3 0 1 0 2.1 2.9V3Z" transform="translate(-1.2 .25)" />
     </svg>
   );
 }

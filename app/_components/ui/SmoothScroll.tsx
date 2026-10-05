@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { onScrollIntent } from "@/lib/scroll-intent";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -150,7 +152,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       cancelSetup();
       media.removeEventListener("change", setup);
     };
-  }, []);
+  }, [pathname]);
 
   return (
     <div ref={wrapperRef} id="smooth-wrapper">

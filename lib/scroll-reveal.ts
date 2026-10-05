@@ -15,6 +15,7 @@ function releaseWhenIdle() {
 
 function onMotionChange() {
   if (!motion?.matches) return;
+  waiting.forEach((node) => node.classList.remove("reveal-pending"));
   waiting.clear();
   running.forEach((finish) => finish());
   releaseWhenIdle();
@@ -35,6 +36,7 @@ export function observeReveal(node: HTMLElement) {
         if (!entry.isIntersecting || !waiting.has(element)) return;
         observer?.unobserve(element);
         waiting.delete(element);
+        element.classList.remove("reveal-pending");
         // Never animate a focused form/control out of view.
         if (element.contains(document.activeElement)) return;
         const finish = () => {
@@ -45,7 +47,7 @@ export function observeReveal(node: HTMLElement) {
           releaseWhenIdle();
         };
         const onEnd = (event: AnimationEvent) => {
-          if (event.target === element && event.animationName === "fadeInDown") finish();
+          if (event.target === element && (event.animationName === "maali-enter" || event.animationName === "fadeInDown")) finish();
         };
         running.set(element, finish);
         element.addEventListener("animationend", onEnd);
@@ -53,13 +55,15 @@ export function observeReveal(node: HTMLElement) {
         element.classList.add("animated", "fadeInDown");
       });
       releaseWhenIdle();
-    }, { threshold: 0.08 });
+    }, { threshold: 0.08, rootMargin: "0px 0px -80px 0px" });
   }
+  node.classList.add("reveal-pending");
   waiting.add(node);
   observer.observe(node);
   const revealOnFocus = () => {
     observer?.unobserve(node);
     waiting.delete(node);
+    node.classList.remove("reveal-pending");
     running.get(node)?.();
     releaseWhenIdle();
   };

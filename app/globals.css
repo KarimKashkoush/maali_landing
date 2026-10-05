@@ -231,6 +231,22 @@ html.gsap-smooth-scroll {
   }
 }
 
+/* Two equal groups, with spacing inside each group, create a seamless loop. */
+@keyframes partners-loop {
+  to { transform: translateX(-50%); }
+}
+
+/* Animate.css supplies lifecycle/fill-mode; keep the entrance travel subtle. */
+[data-reveal].reveal-pending { opacity: 0; }
+[data-reveal].animated.fadeInDown { animation-name: maali-enter; }
+@keyframes maali-enter {
+  from { opacity: 0; transform: translate3d(0, -28px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal].reveal-pending { opacity: 1; }
+}
+
 @keyframes marquee-scroll-english {
   from {
     transform: translateX(-16.666667%);

@@ -41,8 +41,8 @@ export default function SchoolProfile({ school }: { school: School }) {
         <div className="mx-auto grid w-full max-w-[76rem] grid-cols-1 items-center gap-12 text-center md:grid-cols-[minmax(0,1.15fr)_minmax(14rem,.85fr)] md:text-start">
           <div>
             <Link href="/#home" className="mb-6 inline-flex items-center gap-2 text-[.85rem] font-extrabold text-white/68 md:mb-10 [&_svg]:size-4">
-              <Arrow aria-hidden="true" />
-              {text.back}
+              <Arrow className="shrink-0" aria-hidden="true" />
+              <span className="leading-none">{text.back}</span>
             </Link>
             <p className="text-[.82rem] font-black text-[#d6aa48]">
               {school.group === "national" ? text.national : text.international}

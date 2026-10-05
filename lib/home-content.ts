@@ -44,13 +44,13 @@ export const previewFeedback = [
   { ar: "الشراكة بين المدرسة والأسرة مهمة لنا، والحوار المستمر يساعدنا على دعم أبنائنا في كل مرحلة.", en: "The partnership between school and home matters to us. Ongoing dialogue helps us support our children at every stage." },
 ] as const;
 
+// School-supplied Saudi WhatsApp number, including the country code.
+export const contactWhatsApp = "966920014984";
+
 // Empty links are intentionally not replaced by guessed accounts.
 export const socialUrls: Record<string, string> = {
-  Facebook: "", Instagram: "", YouTube: "", WhatsApp: "", Snapchat: "", TikTok: "", "X (Twitter)": "",
+  Facebook: "https://www.facebook.com/profile.php?id=61582712177808", Instagram: "https://instagram.com/maali_schools", YouTube: "", WhatsApp: `https://wa.me/${contactWhatsApp}`, Snapchat: "https://snapchat.com/@maali_schools", TikTok: "https://tiktok.com/@maali_schools1", "X (Twitter)": "https://x.com/maali_schools",
 };
-
-// Add the school's WhatsApp number in international format after confirmation.
-export const contactWhatsApp = "";
 
 export const previewParents = [
   { ar: "أحمد عبدالله", en: "Ahmed Abdullah", student: { ar: "عمر", en: "Omar" } },

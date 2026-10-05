@@ -8,12 +8,19 @@ import HeroParticles from "./_components/ui/HeroParticles";
 import SchoolsDialog from "./_components/ui/SchoolsDialog";
 import SchoolVideo from "./_components/ui/SchoolVideo";
 import SchoolNumbers from "./_components/ui/SchoolNumbers";
+import EducationStages from "./_components/ui/EducationStages";
 import FeaturedStudents from "./_components/ui/FeaturedStudents";
 import SchoolAchievements from "./_components/ui/SchoolAchievements";
+import SchoolPartners from "./_components/ui/SchoolPartners";
 import ParentFeedback from "./_components/ui/ParentFeedback";
 import ContactSection from "./_components/ui/ContactSection";
 import SocialLinks from "./_components/ui/SocialLinks";
 import Footer from "./_components/layout/Footer";
+import SchoolOverview from "./_components/ui/SchoolOverview";
+import CampusLife from "./_components/ui/CampusLife";
+import SchoolMedia from "./_components/ui/SchoolMedia";
+import AdmissionsSection from "./_components/ui/AdmissionsSection";
+import SchoolHelp from "./_components/ui/SchoolHelp";
 
 const heroImageSizes = "(min-width: 1024px) and (max-height: 760px) min(27vw, 304px), (min-width: 1024px) min(31vw, 400px), min(34vw, 192px)";
 const { props: heroImage } = getImageProps({ src: schoolMark, alt: "", sizes: heroImageSizes });
@@ -51,9 +58,11 @@ export default function Home() {
               {t.hero.aboutTitle}
             </p>
 
-            <div className="mt-[clamp(1.5rem,3vh,2.25rem)]">
-              <SchoolsDialog />
+            <div className="mt-[clamp(1.5rem,3vh,2.25rem)] flex flex-wrap justify-center gap-3 lg:justify-start">
+              <a href="#admissions" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand-solid px-6 py-3 text-sm font-black text-white">{language === "ar" ? "سجّل الآن" : "Register now"}</a>
+              <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-brand/30 bg-background px-6 py-3 text-sm font-black text-brand">{language === "ar" ? "تواصل معنا" : "Contact us"}</a>
             </div>
+            <div className="mt-2"><SchoolsDialog compact /></div>
 
             <div className="mt-5"><SocialLinks /></div>
           </div>
@@ -107,12 +116,18 @@ export default function Home() {
 
       <SchoolVideo />
 
+      <SchoolOverview />
       <BrandStory />
-
       <SchoolNumbers />
-      <FeaturedStudents />
+      <EducationStages />
+      <CampusLife />
       <SchoolAchievements />
+      <FeaturedStudents />
+      <SchoolMedia />
+      <SchoolPartners />
       <ParentFeedback />
+      <AdmissionsSection />
+      <SchoolHelp />
       <ContactSection />
     </main>
     <Footer />

@@ -14,8 +14,8 @@ export default function Reveal({ as: Tag = "div", delay = 0, style, ...props }: 
   }, []);
   return <Tag {...props} ref={ref} data-reveal="" style={{
     ...style,
-    "--animate-duration": "1000ms",
-    animationDelay: `${Math.min(Math.max(delay, 0), 240)}ms`,
-    animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+    "--animate-duration": "1400ms",
+    animationDelay: `${Math.min(Math.max(delay, 0), 180)}ms`,
+    animationTimingFunction: "cubic-bezier(0.2, 0.65, 0.3, 1)",
   } as CSSProperties} />;
 }

@@ -15,7 +15,7 @@ class ElementStub extends EventTarget {
 }
 class ObserverStub {
   nodes = new Set();
-  constructor(callback) { this.callback = callback; observers.push(this); }
+  constructor(callback, options) { this.callback = callback; this.options = options; observers.push(this); }
   observe(node) { this.nodes.add(node); }
   unobserve(node) { this.nodes.delete(node); }
   disconnect() { this.nodes.clear(); }
@@ -35,19 +35,20 @@ test("all elements share one observer; effects start only at entry", () => {
   const first = new ElementStub(), second = new ElementStub();
   watch(first); watch(second);
   assert.equal(observers.length, 1);
-  assert.equal(first.classes.size, 0);
+  assert.deepEqual([...first.classes], ["reveal-pending"]);
+  assert.equal(observers[0].options.rootMargin, "0px 0px -80px 0px");
   observers[0].enter(first, false);
-  assert.equal(first.classes.size, 0);
+  assert.deepEqual([...first.classes], ["reveal-pending"]);
   observers[0].enter(first);
   assert.deepEqual([...first.classes], ["animated", "fadeInDown"]);
-  assert.equal(second.classes.size, 0);
+  assert.deepEqual([...second.classes], ["reveal-pending"]);
   assert.equal(observers[0].nodes.has(first), false);
 });
 
 test("completed reveals remove animation transforms and never replay", () => {
   const node = new ElementStub(); watch(node);
   observers[0].enter(node);
-  node.dispatchEvent(Object.assign(new Event("animationend"), { animationName: "fadeInDown" }));
+  node.dispatchEvent(Object.assign(new Event("animationend"), { animationName: "maali-enter" }));
   assert.equal(node.classes.size, 0);
   observers[0].enter(node);
   assert.equal(node.classes.size, 0);

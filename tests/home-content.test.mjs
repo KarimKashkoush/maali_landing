@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { schoolStats, studentStages, featuredStudents, previewFeedback, previewParents, contactWhatsApp } from "../lib/home-content.ts";
+import { schoolStats, studentStages, featuredStudents, previewFeedback, previewParents, contactWhatsApp, socialUrls } from "../lib/home-content.ts";
 import { whatsappLink } from "../lib/contact.ts";
 import { countMedals, medalTypes, medalsByType, schoolAchievements, totalMedals } from "../lib/achievements.ts";
 
@@ -17,9 +17,13 @@ test("each of four stages has three ranked demo students and no photos", () => {
 test("every sample review has an author", () => {
   assert.equal(previewFeedback.length, previewParents.length);
 });
-test("WhatsApp remains inactive until the school supplies a number", () => {
-  assert.equal(contactWhatsApp, "");
-  assert.equal(whatsappLink(contactWhatsApp, "Test"), null);
+test("contact messages and social icons use the supplied school WhatsApp number", () => {
+  assert.equal(contactWhatsApp, "966920014984");
+  assert.equal(whatsappLink(contactWhatsApp, "Test"), "https://wa.me/966920014984?text=Test");
+  assert.equal(socialUrls.WhatsApp, "https://wa.me/966920014984");
+});
+test("WhatsApp rejects missing or invalid numbers", () => {
+  assert.equal(whatsappLink("", "Test"), null);
   assert.equal(whatsappLink("javascript:alert(1)", "Test"), null);
 });
 test("WhatsApp links normalize international numbers and encode messages", () => {
