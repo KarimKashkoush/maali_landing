@@ -68,7 +68,9 @@ export default function ParentFeedback() {
 
   return (
     <section id="testimonials" ref={sectionRef} aria-labelledby="feedback-title" className="scroll-mt-20 bg-[#eae9df] text-[#153f3b] dark:bg-[#183a36] dark:text-white">
-      <div ref={pinRef} className="flex min-h-[calc(100svh-5rem)] flex-col justify-center py-10 motion-reduce:min-h-0 motion-reduce:py-20 [@media(max-height:599px)]:min-h-0">
+      {/* Pin the content's natural height: viewport-height centering creates a
+          large empty area above the heading on tall screens. */}
+      <div ref={pinRef} className="flex flex-col py-8 sm:py-10 motion-reduce:py-20">
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
           <div className="mb-7 flex items-center justify-between gap-5">
             <div>
