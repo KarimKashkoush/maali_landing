@@ -20,7 +20,7 @@ The project is still in development. Do not invent a production domain or submit
 4. Test Core Web Vitals on production hosting and real mobile connections. A successful local build is not a PageSpeed score or proof of search ranking.
 5. Verify media byte-range responses, caching, and HTTPS on the deployment host, then configure Search Console.
 
-The page has an Arabic heading and description in server-rendered HTML, individual school metadata, and Open Graph titles/descriptions. Cairo remains a fallback font with preload disabled; Ping remains the primary font. Its WOFF2 files total 127,368 bytes instead of 317,016 bytes in OTF, with the same glyphs and typography.
+The page has an Arabic heading and description in server-rendered HTML, individual school metadata, and Open Graph titles/descriptions. Ping remains the primary font. Its WOFF2 files total 127,368 bytes instead of 317,016 bytes in OTF, with the same glyphs and typography. The obsolete Cairo web-font fallback is no longer registered: disabling its preload did not prevent a later 227,539-byte font request in the supplied production audit. Missing glyphs use system fallbacks without another web-font download; original font files are retained.
 
 ## Local audits
 
@@ -30,7 +30,7 @@ Run `npm run build`, then `npm run start -- --port 3001`, and audit `http://loca
 
 The hero image uses responsive Next.js optimization with eager loading and high fetch priority; the other logos use correctly sized, lazy-loaded images. The schools dialog library is requested on hover/focus/click instead of in the initial render. The decorative desktop cursor initializes after pointer movement. Named marquee and social containers use the accessible `group` role.
 
-The hero wraps its image in a `picture` with a tiny inline source for the short-screen breakpoints where the logo is hidden. A media-qualified preload uses `getImageProps` and exactly the same `sizes`/`srcSet` as the rendered image, only on visible breakpoints. This brings discovery into the head without fetching a hidden or mismatched image. Verify both 390×667 (hidden) and 390×844 (visible) after changing these breakpoints.
+The hero wraps its image in a `picture` with a tiny inline source for the short-screen breakpoints where the logo is hidden. `lib/school-mark.ts` supplies pre-encoded responsive WebP assets and shared `sizes`/`srcSet` to both the high-priority media-qualified preload and the image. Static imports provide hashed immutable URLs and bypass runtime image optimization on the LCP path. Rebuild these assets with `node scripts/optimize-school-mark.mjs`; the original PNG is retained. Verify both 390×667 (hidden) and 390×844 (visible) after changing these breakpoints.
 
 The browser icon is 96×96 and 3,956 bytes instead of the original 93,146 bytes. `scripts/optimize-icon.mjs` rebuilds it from `assets/icon-source.png` without changing the full-resolution source. Navbar section links use native anchors (no route prefetch or redundant RSC requests for the same page); links to separate school pages still use Next Link. The language button's accessible name includes its visible EN/ع text.
 
@@ -63,4 +63,14 @@ Run `node --experimental-strip-types --test tests/*.test.mjs` for content, medal
 - Below-the-fold titles/cards reveal once when visible using a shared IntersectionObserver. Animation classes are removed on completion, unmount, keyboard focus, or a change to reduced motion. No additional scroll/frame loop is used, and HTML remains visible if JavaScript is unavailable.
 - The hero and GSAP-owned pin/track elements are not wrapped in reveal animations. Student tab changes animate newly mounted cards without changing their layout.
 - `app/loading.tsx` uses the original logo clipped into two halves: the left column emerges right-to-left behind the fixed right column, with a gentle pulse while the route is pending. It follows the actual Next.js route loading lifecycle; there is no forced splash-screen delay, fake progress percentage, or wait for background video/assets. Fast or prefetched routes may not show it at all.
-- Reduced-motion users see a static loader. Both halves share the same optimized image request. The normal page is never held back just to display the animation.
+- Reduced-motion users see a static loader. Both halves share one pre-encoded CSS background image. A hidden streamed fallback no longer emits competing eager-image preloads. The normal page is never held back just to display the animation.
+
+## Production report reviewed 2026-10-05
+
+The supplied Vercel report scored Performance 81, Accessibility 97, Best Practices 96, SEO 100. These are **baseline figures, not results for this revision**.
+
+- Accessibility failures: small gold value numbers on white (2.16:1), and translucent feedback numbers (2.79:1). These now use higher-contrast colors; source regression tests cover the replacements and the minimum 4.5:1 ratio.
+- The only scored console exception was thrown by a `chrome-extension://.../ad-blocker/content.js` script. Every minification warning listed in that report was extension-owned too. Do not mask console errors or remove features to hide external extension failures.
+- The below-fold courtyard photograph now waits until within 300px of the viewport, with a reserved 4:5 frame and a no-JavaScript image fallback. Its original width is preserved; responsive sizes are capped to the actual 448px container and quality is 60. It must appear on approach without shifting later sections.
+- Local production verification: no Cairo font registration, only one hero image preload at high priority with matching candidates, no initial overview image, and the overview photo loads on approach. Build and 34 source/unit checks passed. Browser smoke tests are not a replacement for a Lighthouse score.
+- Re-deploy the revision before measuring the public URL. Run three identical mobile Lighthouse audits in a clean profile with all extensions disabled, then compare the median. Do not assume an incognito window is extension-free. Never use special audit-user-agent behavior, hidden content, disabled animations only during audits, or arbitrary delayed hydration to inflate the score.

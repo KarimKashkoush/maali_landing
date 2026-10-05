@@ -84,7 +84,7 @@ export default function ParentFeedback() {
             <div ref={trackRef} className="flex w-max gap-5 pb-2 motion-reduce:grid motion-reduce:w-full motion-reduce:grid-cols-1 md:motion-reduce:grid-cols-2 [@media(max-height:599px)]:grid [@media(max-height:599px)]:w-full [@media(max-height:599px)]:grid-cols-1 sm:[@media(max-height:599px)]:grid-cols-2">
               {previewFeedback.map((feedback, index) => (
                 <figure key={previewParents[index].en} dir={language === "ar" ? "rtl" : "ltr"} className="flex min-h-72 w-[min(82vw,25rem)] shrink-0 flex-col rounded-2xl bg-white p-6 text-[#153f3b] motion-reduce:w-auto sm:p-8 [@media(max-height:599px)]:w-auto">
-                  <div className="mb-5 flex items-center justify-between"><Quote className="size-7 text-[#a67620]" strokeWidth={1.3} aria-hidden="true" /><span className="text-xs text-[#153f3b]/50" aria-hidden="true">0{index + 1}</span></div>
+                  <div className="mb-5 flex items-center justify-between"><Quote className="size-7 text-[#a67620]" strokeWidth={1.3} aria-hidden="true" /><span className="text-xs text-[#153f3b]/75" aria-hidden="true">0{index + 1}</span></div>
                   <blockquote className="flex-1 text-base leading-[1.9] font-bold sm:text-lg">{feedback[language]}</blockquote>
                   <figcaption className="mt-7 border-t border-[#153f3b]/15 pt-5">
                     <p className="font-black">{previewParents[index][language]}</p>

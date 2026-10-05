@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: { qualities: [60, 75] },
   async headers() {
     return [{
       source: "/videos/:path*",

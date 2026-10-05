@@ -1,7 +1,6 @@
 "use client";
 
-import Image, { getImageProps } from "next/image";
-import schoolMark from "@/public/mini_logo_display.png";
+import { schoolMark, heroMarkSizes, heroMarkMedia } from "@/lib/school-mark";
 import { useUi } from "./_components/providers/UiProvider";
 import BrandStory from "./_components/ui/BrandStory";
 import HeroParticles from "./_components/ui/HeroParticles";
@@ -22,9 +21,6 @@ import SchoolMedia from "./_components/ui/SchoolMedia";
 import AdmissionsSection from "./_components/ui/AdmissionsSection";
 import SchoolHelp from "./_components/ui/SchoolHelp";
 
-const heroImageSizes = "(min-width: 1024px) and (max-height: 760px) min(27vw, 304px), (min-width: 1024px) min(31vw, 400px), min(34vw, 192px)";
-const { props: heroImage } = getImageProps({ src: schoolMark, alt: "", sizes: heroImageSizes });
-
 
 export default function Home() {
   const { language, t } = useUi();
@@ -36,10 +32,10 @@ export default function Home() {
       <link
         rel="preload"
         as="image"
-        href={heroImage.src}
-        imageSrcSet={heroImage.srcSet}
-        imageSizes={heroImageSizes}
-        media="(min-height: 740px), (min-width: 1024px) and (min-height: 501px)"
+        href={schoolMark.src}
+        imageSrcSet={schoolMark.srcSet}
+        imageSizes={heroMarkSizes}
+        media={heroMarkMedia}
         fetchPriority="high"
       />
       <section
@@ -76,13 +72,17 @@ export default function Home() {
                 media="(max-height: 500px), (max-width: 1023px) and (max-height: 739px)"
                 srcSet="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='1'%20height='1'/%3E"
               />
-              <Image
-                src={schoolMark}
+              {/* Pre-encoded responsive assets avoid runtime optimization on the LCP path. */}
+              <img
+                src={schoolMark.src}
+                srcSet={schoolMark.srcSet}
+                width={800}
+                height={800}
                 alt={t.schoolName}
                 className="relative h-auto w-[min(34vw,12rem)] drop-shadow-[0_1.75rem_2.5rem_rgb(28_89_84_/_0.14)] lg:w-[min(31vw,25rem)] [@media(min-width:1024px)_and_(max-height:760px)]:w-[min(27vw,19rem)]"
                 loading="eager"
                 fetchPriority="high"
-                sizes={heroImageSizes}
+                sizes={heroMarkSizes}
               />
             </picture>
           </div>

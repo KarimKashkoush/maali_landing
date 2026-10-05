@@ -1,7 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import schoolMark from "@/public/mini_logo_display.png";
+import { schoolMark } from "@/lib/school-mark";
 import { useUi } from "../providers/UiProvider";
 
 export default function LogoLoading() {
@@ -12,10 +11,10 @@ export default function LogoLoading() {
         {/* The real artwork is clipped into two halves. The right half masks
             the left one as it emerges from underneath, regardless of locale. */}
         <div data-loading-half="left" className="animated fadeInRight infinite absolute top-0 left-0 h-full w-1/2 overflow-hidden [--animate-duration:2.8s] [animation-timing-function:cubic-bezier(.22,1,.36,1)] motion-reduce:animate-none">
-          <Image src={schoolMark} alt="" width={176} height={176} sizes="176px" loading="eager" className="block h-full w-[200%] max-w-none" />
+          <div className="h-full w-[200%] bg-cover bg-center" style={{ backgroundImage: `url("${schoolMark.loading}")` }} />
         </div>
         <div data-loading-half="right" className="absolute top-0 right-0 z-10 h-full w-1/2 overflow-hidden bg-background">
-          <Image src={schoolMark} alt="" width={176} height={176} sizes="176px" loading="eager" className="absolute top-0 right-0 block h-full w-[200%] max-w-none" />
+          <div className="absolute top-0 right-0 h-full w-[200%] bg-cover bg-center" style={{ backgroundImage: `url("${schoolMark.loading}")` }} />
         </div>
       </div>
       <p role="status" aria-live="polite" aria-atomic="true" className="text-sm font-bold text-brand">{language === "ar" ? "جارٍ تحميل الصفحة…" : "Loading the page…"}</p>

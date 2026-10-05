@@ -6,15 +6,6 @@ import { UiProvider } from "./_components/providers/UiProvider";
 import CursorFollower from "./_components/ui/CursorFollower";
 import SmoothScroll from "./_components/ui/SmoothScroll";
 
-const cairo = localFont({
-  src: "./fonts/Cairo-Variable.ttf",
-  variable: "--font-cairo",
-  preload: false,
-  weight: "200 1000",
-  style: "normal",
-  display: "swap",
-});
-
 const ping = localFont({
   src: [
     { path: "./fonts/PingARLT-Bold.woff2", weight: "700", style: "normal" },
@@ -41,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="ar"
       dir="rtl"
-      className={`${ping.variable} ${cairo.variable} h-full antialiased`}
+      className={`${ping.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

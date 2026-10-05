@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import DeferredImage from "./DeferredImage";
 import { Compass, Eye, Target } from "lucide-react";
 import { schoolValues } from "@/lib/school-site-content";
 import { useUi } from "../providers/UiProvider";
@@ -20,10 +20,10 @@ export default function SchoolOverview() {
           </div>
         </div>
         <Reveal className="relative mx-auto w-full max-w-md overflow-hidden rounded-t-[12rem] rounded-b-2xl bg-muted ring-1 ring-brand/10 ring-offset-8 ring-offset-background">
-          <Image src="/campus/campus-15.webp" alt={ar ? "الساحة الداخلية لمدارس المعالي" : "Maali Schools' indoor courtyard"} width={576} height={720} sizes="(min-width:1024px) 448px, 90vw" className="aspect-[4/5] w-full object-cover" />
+          <DeferredImage frameClassName="aspect-[4/5] w-full" src="/campus/campus-15.webp" alt={ar ? "الساحة الداخلية لمدارس المعالي" : "Maali Schools' indoor courtyard"} width={576} height={720} sizes="(min-width: 498px) 448px, calc(100vw - 40px)" quality={60} className="aspect-[4/5] w-full object-cover" />
         </Reveal>
       </div>
-      <div className="mt-16 border-t border-border pt-8"><h3 className="mb-7 text-sm font-bold text-muted-foreground">{ar ? "قيم نحيا بها كل يوم" : "VALUES WE LIVE EVERY DAY"}</h3><ul className="grid grid-cols-2 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">{schoolValues.map((value, index) => <li key={value.en} className="border-s border-brand/20 ps-4"><span className="mb-2 block text-xs text-gold" aria-hidden="true">0{index + 1}</span><span className="text-lg font-black text-brand">{value[language]}</span></li>)}</ul></div>
+      <div className="mt-16 border-t border-border pt-8"><h3 className="mb-7 text-sm font-bold text-muted-foreground">{ar ? "قيم نحيا بها كل يوم" : "VALUES WE LIVE EVERY DAY"}</h3><ul className="grid grid-cols-2 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">{schoolValues.map((value, index) => <li key={value.en} className="border-s border-brand/20 ps-4"><span className="mb-2 block text-xs text-[#8a641f] dark:text-[#edc36c]" aria-hidden="true">0{index + 1}</span><span className="text-lg font-black text-brand">{value[language]}</span></li>)}</ul></div>
     </div>
   </section>;
 }
