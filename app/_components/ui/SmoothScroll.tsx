@@ -60,6 +60,16 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
       const scrollToTarget = (target: HTMLElement, animate: boolean) => {
         const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+        const feedback = ScrollTrigger.getById("feedback-horizontal");
+        const reviews = document.getElementById("testimonials");
+        // The following sections share the feedback pin so no blank spacer is
+        // visible below its cards. Their anchors must include the entire pinned
+        // travel, even when clicked halfway through horizontal scrolling.
+        if (feedback?.pin?.contains(target) && !reviews?.contains(target)) {
+          const localTop = target.getBoundingClientRect().top - feedback.pin.getBoundingClientRect().top;
+          smoother.scrollTo(feedback.end + localTop + 80 - margin, animate);
+          return;
+        }
         smoother.scrollTo(target, animate, `top ${margin}px`);
       };
 

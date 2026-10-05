@@ -24,7 +24,7 @@ export default function Footer() {
     <div className="mx-auto max-w-7xl">
       <div className="grid gap-12 pb-14 md:grid-cols-2 lg:grid-cols-[1.15fr_.8fr_1fr] lg:gap-16">
         <div>
-          <Link href="/#home" prefetch={false} aria-label={t.schoolName} className="inline-block rounded-xl bg-white p-4"><Image src="/logo.png" alt={t.schoolName} width={280} height={86} sizes="240px" className="h-auto w-60 max-w-full" /></Link>
+          <Link href="/#home" prefetch={false} aria-label={t.schoolName} className="inline-block rounded-xl p-4"><Image src="/logo.png" alt={t.schoolName} width={280} height={86} sizes="240px" className="h-auto w-60 max-w-full brightness-0 invert" /></Link>
           <p className="mt-6 max-w-xs text-base leading-8 text-white/75">{ar ? "هنا تبدأ الحكاية، ويكبر الطموح. أكثر من 30 سنة من الخبرة في تعليم الأجيال." : "Where stories begin and ambition grows. Over 30 years of experience educating generations."}</p>
           <div className="mt-6"><SocialLinks align="start" /></div>
         </div>

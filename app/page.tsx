@@ -125,10 +125,12 @@ export default function Home() {
       <FeaturedStudents />
       <SchoolMedia />
       <SchoolPartners />
-      <ParentFeedback />
-      <AdmissionsSection />
-      <SchoolHelp />
-      <ContactSection />
+      <div data-feedback-flow>
+        <ParentFeedback />
+        <AdmissionsSection />
+        <SchoolHelp />
+        <ContactSection />
+      </div>
     </main>
     <Footer />
     </>

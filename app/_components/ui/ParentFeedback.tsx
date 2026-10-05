@@ -24,19 +24,30 @@ export default function ParentFeedback() {
         gsap.registerPlugin(ScrollTrigger);
         const section = sectionRef.current;
         const pin = pinRef.current;
+        const flow = section.closest<HTMLElement>("[data-feedback-flow]");
+        if (!flow) return;
         const viewport = viewportRef.current;
         const track = trackRef.current;
         const media = gsap.matchMedia();
         media.add("(prefers-reduced-motion: no-preference) and (min-width: 768px) and (min-height: 640px), (prefers-reduced-motion: no-preference) and (min-width: 360px) and (min-height: 740px)", () => {
           const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+          if (!distance()) return;
+          // Measure the complete content, including the scrolling hint.
+          if (navigationRef.current) gsap.set(navigationRef.current, { display: "flex" });
           // Tall content stays natively scrollable on short or zoomed screens.
-          if (!distance() || pin.scrollHeight > window.innerHeight - 80 + 2) return;
+          if (pin.scrollHeight > window.innerHeight - 80 + 2) {
+            if (navigationRef.current) gsap.set(navigationRef.current, { display: "none" });
+            return;
+          }
           viewport.scrollLeft = 0;
           gsap.set(viewport, { overflowX: "hidden" });
-          if (navigationRef.current) gsap.set(navigationRef.current, { display: "flex" });
           const timeline = gsap.timeline({
             scrollTrigger: {
-              trigger: section, pin, start: "top top+=80",
+              id: "feedback-horizontal",
+              // Pin the following content with the cards. Pinning just the
+              // cards puts the horizontal travel's spacer directly underneath
+              // them, exposing an empty block on taller screens.
+              trigger: section, pin: flow, start: "top top+=80",
               end: () => `+=${distance()}`,
               scrub: 0.65, anticipatePin: 1, invalidateOnRefresh: true,
               pinSpacing: true, refreshPriority: -10,
@@ -68,8 +79,8 @@ export default function ParentFeedback() {
 
   return (
     <section id="testimonials" ref={sectionRef} aria-labelledby="feedback-title" className="scroll-mt-20 bg-[#eae9df] text-[#153f3b] dark:bg-[#183a36] dark:text-white">
-      {/* Pin the content's natural height: viewport-height centering creates a
-          large empty area above the heading on tall screens. */}
+      {/* Natural-height content stays adjacent to the following section while
+          the shared flow wrapper is pinned for horizontal browsing. */}
       <div ref={pinRef} className="flex flex-col py-8 sm:py-10 motion-reduce:py-20">
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
           <div className="mb-7 flex items-center justify-between gap-5">

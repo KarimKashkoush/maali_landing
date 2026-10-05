@@ -173,7 +173,7 @@ export default function SchoolAchievements() {
               <span className={`inline-flex items-center gap-2 text-xs font-bold ${ranking ? "text-[#edc36c]" : "text-brand"}`}><Icon className="size-4 shrink-0" strokeWidth={1.5} aria-hidden="true" /><span className="leading-snug">{medalCount ? `${medalCount} ${ar ? (medalCount === 1 ? "ميدالية" : "ميداليات") : (medalCount === 1 ? "medal" : "medals")}` : ranking ? (ar ? "على مستوى المملكة" : "NATIONAL RECOGNITION") : (ar ? "جائزة وتميّز" : "AWARD & RECOGNITION")}</span></span>
               <span className={`text-xs tabular-nums ${ranking ? "text-white/60" : "text-muted-foreground"}`} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
             </div>
-            <h4 className={`relative max-w-[28ch] text-xl leading-[1.7] font-black ${ranking ? "sm:text-3xl" : "sm:text-[1.375rem]"}`}>{achievement.title[language]}</h4>
+            <h4 className={`relative max-w-[28ch] text-xl leading-[1.7] font-black text-[#ae5126] ${ranking ? "w-fit rounded-lg bg-white px-3 py-1 sm:text-3xl" : "dark:w-fit dark:rounded-lg dark:bg-white dark:px-3 dark:py-1 sm:text-[1.375rem]"}`}>{achievement.title[language]}</h4>
             {(medalCount > 0 || ranking) && <p className={`relative mt-2 text-sm leading-7 ${ranking ? "text-white/80" : "text-muted-foreground"}`}>{achievement.detail[language]}</p>}
             {medalCount ? <div className="mt-auto pt-7">
               <div className="flex items-start gap-1 border-t border-border pt-5 sm:gap-1.5" role="img" aria-label={achievement.detail[language]} data-medal-row>
